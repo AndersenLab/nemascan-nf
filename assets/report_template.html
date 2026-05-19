@@ -382,9 +382,9 @@
                 <h1 id="citations_title">Please kindly cite the following publications</h1>
                 <ul>
                     <li>Widmayer SJ, Evans KS, Zdraljevic S, and Andersen EC (2022) Evaluating the power and limitations of genome-wide association mapping in C. elegans. G3, May 10; DOI: <a href="https://dx.doi.org/10.1093/g3journal/jkac114">10.1093/g3journal/jkac114</a>.</li>
-                    <li>Lee D, Zdraljevic S, Stevens L, Wang Y, Tanny RE, Crombie TA, Cook DE, Webster AK, Chirakar R, Baugh LR, Sterken M, Braendle C, Felix M-A, Rockman MV, and Andersen EC (2021) Balancing selection maintains ancient genetic diversity in C. elegans. Nature Ecology and Evolution, Apr 5; DOI: <a href="https://dx.doi.org/10.1038/s41559-021-01435-x">10.1038/s41559-021-01435-x</a>.</li>
                     <li>Zdraljevic S, Fox BW, Strand C, Panda O, Tenjo-Castano FJ, Brady SC, Crombie TA, Doench JG, Schroeder FC, and Andersen EC (2019) Natural variation in arsenic toxicity is explained by differences in branched chain amino acid metabolism eLife, Apr 8; DOI: <a href="https://dx.doi.org/10.7554/eLife.40260">10.7554/eLife.40260</a>.</li>
                     <li>Cook DE, Zdraljevic S, Roberts JP, Andersen EC (2016) CeNDR, the Caenorhabditis elegans Natural Diversity Resource. Nucleic Acids Research, Oct 3; <a href="https://dx.doi.org/10.1093/nar/gkw893">10.1093/nar/gkw893</a>.</li>
+                    <li>Crombie TA, McKeown R, Moya ND, Evans KS, Widmayer SJ, LaGrassa V, Roman N, Tursunova O, Zhang G, Gibson SB, Buchanan CM, Roberto NM, Viera R, Tanny RE, Andersen EC (2023) CaeNDR, the Caenorhabditis Natural Diversity Resource. Nucleic Acids Research, Oct 19; <a href="http://dx.doi.org/10.1093/nar/gkad887">10.1093/nar/gkad887</a>.</li>
                 </ul>
             </div>
         </main>
@@ -778,7 +778,7 @@ function add_method_section(method) {
 
     method_div.append("<div id='" + method + "_pxg_plots'><h2 id='" + method + "_pxg_title'>Phenotype by Genotype Split</h2><p>For each detected QTL, we can observe the phenotypes of the strains with the reference (REF) allele (<i>i.e.</i>, same genotype as the reference strain) compared to the phenotypes of the strains with the alternative (ALT) allele (i.e., genotype different than the reference strain). A QTL is defined as a region where genetic variation is correlated with phenotypic variation, so we expect to see a difference in phenotype between the REF and ALT groups. In a best-case scenario, we like to see a large phenotypic difference between the REF and ALT groups and many strains in both groups. If one group has a small number of strains (just over 5% of the strains in the mapping), this QTL could be caused by a spurious association of a variant with a phenotypic difference. It is also important to ensure that the mean phenotype of neither group is driven by a small number of outlier strains.</p>")
     toc_entries.push(["Phenotype by genotype split", method + "_pxg_plots", 2]);
-    var pxg_div_name, container_div;
+    var pxg_div_name, container_div, highlighted=0;
     sig_qtl.forEach((row, idx) => {
         if (idx % 3 == 0) {
             method_div.append("<div class='container'><div class='row' id='pxg_" + method + "_" + idx + "_row'></div></div>");
@@ -788,8 +788,11 @@ function add_method_section(method) {
             container_div.append("<div class='col-md-4' style='width:33%;' id='" + "pxg_" + method + "_" + (idx + 2) + "'></div>");
         }
         pxg_div_name = "pxg_" + method + "_" + idx;
-        create_PxG_plot(pxg_div_name, row[1], method);
+        highlighted += create_PxG_plot(pxg_div_name, row[1], method);
     });
+    if (highlighted > 0) {
+        method_div.append("<p>Colored points represent user-selected strains for highlighting.</p>");
+    }
     method_div.append("</div><br>");
     if (sig_qtl.length > 1) {
         add_interQTL_linkage_plot(method_div, method);
@@ -803,7 +806,7 @@ function add_method_section(method) {
 
 function create_PxG_plot(div_name, marker, method) {
     var traces=[], Y0=[], labels0=[], Y1=[], labels1=[], colors0=[], colors1=[];
-    var div = $("#" + div_name);
+    var div = $("#" + div_name), highlighted=0;
     div.append("<div id='" + div_name + "_plot'></div");
     all_data.broad.strain.forEach((strain, idx) => {
         if (all_data.broad.qtl_genotype[marker]['genotype'][idx] == -1){
@@ -811,6 +814,7 @@ function create_PxG_plot(div_name, marker, method) {
                 colors0.push('#D41159');
                 Y0.push(all_data.broad.phenotype[idx]);
                 labels0.push(strain);
+                highlighted += 1;
             } else {
                 colors0.push('#000000');
                 Y0.push(all_data.broad.phenotype[idx]);
@@ -821,6 +825,7 @@ function create_PxG_plot(div_name, marker, method) {
                 colors1.push('#D41159');
                 Y1.push(all_data.broad.phenotype[idx]);
                 labels1.push(strain);
+                highlighted += 1;
             } else {
                 colors1.push('#000000');
                 Y1.push(all_data.broad.phenotype[idx]);
@@ -906,11 +911,12 @@ function create_PxG_plot(div_name, marker, method) {
         height: 400,
     };
     var plot = Plotly.newPlot(div_name + "_plot", traces, layout);
+    return highlighted;
 }
 
 function add_interQTL_linkage_plot(div, method) {
     var width=Math.min(200*(all_data.broad[method]['LD_matrix']['marker'].length), 625);
-    div.append("<div id='" + method + "_interQTL_LD'><h2 id='" + method + "_ld_title'>Linkage Disequilibrium</h2><p>If your trait has multiple QTL, we calculate linkage disequilibrium (LD) between them. This is useful because sometimes we find that one strong QTL might be in linkage disequilibrium to a secondary QTL (even if it exists on another chromosome). If this is the case, the secondary QTL might not contain a true causal variant, thus it is important to check this before narrowing the QTL experimentally.</p><br><div id='" + method + "_interQTL_LD_plot' style='height: " + (width + 70) + "; width: " + (width + 175) + ";'></div></div>")
+    div.append("<div id='" + method + "_interQTL_LD'><h2 id='" + method + "_ld_title'>Linkage Disequilibrium</h2><p>If your trait has multiple QTL, we calculate linkage disequilibrium (LD) between them. This comaprison is useful because sometimes we find that one strong QTL might be in linkage disequilibrium to a secondary QTL (even if it exists on another chromosome). If this is the case, the secondary QTL might not contain a true causal variant, thus it is important to check this before narrowing the QTL experimentally.</p><br><div id='" + method + "_interQTL_LD_plot' style='height: " + (width + 70) + "; width: " + (width + 175) + ";'></div></div>")
     var div_name=method + "_interQTL_LD_plot", ld_data=[], labels=[];
     all_data.broad[method]['LD_matrix']['marker'].forEach((marker) => {
         ld_data.push(new Array(all_data.broad[method]['LD_matrix']['marker'].length).fill(1));
@@ -1481,7 +1487,9 @@ function add_toc_entry(target_id, level, tocList) {
 $(document).ready(function() {
     $("#report_title").append("NemaScan Report for " + all_data.params.trait);
     const now = new Date();
-    $(".meta").append("Generated " + now);
+    $(".meta").append("Generated " + now + "<br>");
+    $(".meta").append("Run by " + all_data.params.user + "<br>");
+    $(".meta").append("https://www.github.com/andersenlab/nemascan-nf branch:" + all_data.params.workflow_branch + " commit:" + all_data.params.workflow_commit);
     var toc_entries=[];
     toc_entries.push(["Usage", "usage", 1]);
     var issue_section=$('#issues_box');

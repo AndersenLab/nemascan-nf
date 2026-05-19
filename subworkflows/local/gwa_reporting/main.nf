@@ -146,7 +146,7 @@ workflow GWA_REPORTING {
                         )
                         .mix (
                             channel.of ( record(
-                                entry: "params\talpha=${params.alpha}\tsignificance_threshold=${params.significance_threshold}\tuser=${workflow.userName}\tversion=${workflow.revision}",
+                                entry: "params\talpha=${params.alpha}\tsignificance_threshold=${params.significance_threshold}\tuser=${workflow.userName}\tworkflow_branch=${workflow.revision}\tworkflow_version=${workflow.commitId}",
                                 files: []) )
                         )
                         .mix (
