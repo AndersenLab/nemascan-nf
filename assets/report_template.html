@@ -1,25 +1,5 @@
 <html lang="en">
     <!DOCTYPE html>
-    <style>
-        table.dataTable tbody th,
-        table.dataTable tbody td {
-            white-space: nowrap;
-        }
-        main {
-            /* display: flex; */
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .is-position-fixed {
-            left:1200px;
-        }
-        .full-container {
-            width: 1200px;
-            left: 0;
-            margin-left: 0px;
-        }
-    </style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,12 +31,44 @@
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
         }
         
+        main {
+            /* display: flex; */
+            gap: 2rem;
+            margin: 0 auto;
+        }
+
+        .floating-toc {
+            width: 250px;
+            justify-self: left;
+            display: flex;
+            position: sticky;
+            top: 0;
+            left: 0;
+            align-self: flex-start;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid var(--secondary-color);
+            box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .full-container {
+            max-width: 1450px;
+            display: flex;
+            position: relative;
+            flex-wrap: nowrap;
+            justify-content: center;
+            flex-direction: row;
+        }
+
         .container {
-            max-width: 1200px;
+            width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            justify-self: right;
         }
         
         /* Header Styles */
@@ -84,45 +96,7 @@
             max-height: 80px;
             margin-bottom: 20px;
         }
-        
-        /* Table of Contents */
-        .toc {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 0px;
-        }
-        
-        .toc h2 {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--secondary-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .toc ul {
-            list-style: none;
-        }
-        
-        .toc li {
-            padding: 5px 0;
-        }
-        
-        .toc a {
-            color: var(--text-color);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .toc a:hover {
-            color: var(--secondary-color);
-        }
-        
-        .toc .toc-level-1 { margin-left: 0; font-weight: bold; }
-        .toc .toc-level-2 { margin-left: 20px; }
-        .toc .toc-level-3 { margin-left: 40px; font-size: 0.9em; }
-        
+
         /* Section Styles */
         .section {
             background: white;
@@ -172,6 +146,11 @@
             font-size: 0.9em;
         }
         
+        table.dataTable tbody th,
+        table.dataTable tbody td {
+            white-space: nowrap;
+        }
+
         .data-table thead {
             background: var(--primary-color);
             color: white;
@@ -305,7 +284,7 @@
             border-radius: 4px; /* Slightly rounded corners */
             font-family: sans-serif; /* Readable font */
         }
-        
+     
     </style>
     <script src="https://code.jquery.com/jquery-4.0.0.slim.min.js"></script>
     <link href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.min.css" rel="stylesheet" crossorigin="anonymous"> 
@@ -313,8 +292,8 @@
     <script src="https://cdn.plot.ly/plotly-3.4.0.min.js" charset="utf-8"></script>
     </head>
 <body>
-    <div class="center full-container">
-        <nav class="toc toc-right js-toc relative z-1 transition--300 absolute pa4 pt5 is-position-fixed"></nav>
+    <div class="full-container" id="full_body">
+        <nav class="toc toc-left js-toc relative z-1 transition--300 absolute pa4 pt5 floating-toc"></nav>
         <div class="container pa4 pt5">
         <header class="report-header">
             <h1 id="report_title"></h1>
@@ -1539,6 +1518,7 @@ $(document).ready(function() {
         collapseDepth: 0,
         scrollSmooth: false
     });
+    document.getElementById("full_body").style.height = document.getElementById("report_body").clientHeight;
 
 });
 </script>
