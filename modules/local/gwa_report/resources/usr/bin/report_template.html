@@ -1,0 +1,1527 @@
+<html lang="en">
+    <!DOCTYPE html>
+    <style>
+        table.dataTable tbody th,
+        table.dataTable tbody td {
+            white-space: nowrap;
+        }
+        main {
+            /* display: flex; */
+            gap: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .is-position-fixed {
+            left:1200px;
+        }
+        .full-container {
+            width: 1200px;
+            left: 0;
+            margin-left: 0px;
+        }
+    </style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.32.2/tocbot.css">
+    <script src="https://unpkg.com/mathjs@15.2.0/lib/browser/math.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tocbot/4.32.2/tocbot.min.js"></script>
+    <style>
+    
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #f8f9fa;
+            --text-color: #333;
+            --border-color: #dee2e6;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        /* Header Styles */
+        .report-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 40px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .report-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        
+        .report-header .meta {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+        
+        .report-header .logo {
+            max-height: 80px;
+            margin-bottom: 20px;
+        }
+        
+        /* Table of Contents */
+        .toc {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 0px;
+        }
+        
+        .toc h2 {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .toc ul {
+            list-style: none;
+        }
+        
+        .toc li {
+            padding: 5px 0;
+        }
+        
+        .toc a {
+            color: var(--text-color);
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .toc a:hover {
+            color: var(--secondary-color);
+        }
+        
+        .toc .toc-level-1 { margin-left: 0; font-weight: bold; }
+        .toc .toc-level-2 { margin-left: 20px; }
+        .toc .toc-level-3 { margin-left: 40px; font-size: 0.9em; }
+        
+        /* Section Styles */
+        .section {
+            background: white;
+            padding-left: 30px;
+            padding-right: 30px;
+            padding-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+        
+        .section h1, .section h2, .section h3 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        
+        .section h1 {
+            font-size: 2em;
+            border-bottom: 3px solid var(--secondary-color);
+            padding-bottom: 10px;
+        }
+        
+        .section h2 {
+            font-size: 1.5em;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 8px;
+        }
+        
+        .section h3 {
+            font-size: 1.2em;
+        }
+        
+        .section p {
+            margin-bottom: 15px;
+            text-align: justify;
+        }
+        
+        .section ul {
+            padding-inline-start: 40px;
+        }
+        
+        /* Table Styles */
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        
+        .data-table thead {
+            background: var(--primary-color);
+            color: white;
+        }
+        
+        .data-table th, .data-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .data-table tbody tr:hover {
+            background-color: #f5f5f5;
+        }
+        
+        .data-table tbody tr:nth-child(even) {
+            background-color: #fafafa;
+        }
+        
+        /* Chart Styles */
+        .chart-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        
+        .chart-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+        
+        .chart-caption {
+            font-style: italic;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+        
+        /* Alert/Info Boxes */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 4px;
+            margin: 15px 0;
+        }
+        
+        .alert-info {
+            background-color: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            color: #0c5460;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+        }
+        
+        .alert-success {
+            background-color: #d4edda;
+            border-left: 4px solid #28a745;
+            color: #155724;
+        }
+        
+        .alert-danger {
+            background-color: #f8d7da;
+            border-left: 4px solid #dc3545;
+            color: #721c24;
+        }
+        
+        /* Code Block */
+        .code-block {
+            background-color: #2d2d2d;
+            color: #f8f8f2;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            margin: 15px 0;
+        }
+        
+        /* Footer */
+        .report-footer {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-size: 0.9em;
+            border-top: 1px solid var(--border-color);
+            margin-top: 30px;
+        }
+        
+        /* Print Styles */
+        @media print {
+            body {
+                background-color: white;
+            }
+            
+            .section {
+                box-shadow: none;
+                break-inside: avoid;
+            }
+            
+            .toc {
+                break-after: page;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+            
+            .report-header {
+                padding: 20px;
+            }
+            
+            .report-header h1 {
+                font-size: 1.8em;
+            }
+            
+            .section {
+                padding: 20px;
+            }
+        }
+        .note-box {
+            padding: 15px; /* Adds space inside the box */
+            margin: 20px 0; /* Adds space above and below the box */
+            background-color: #ccdded; /* A light, soft blue background */
+            border-left: 5px solid #007bff; /* A prominent left border for emphasis */
+            border-radius: 4px; /* Slightly rounded corners */
+            font-family: sans-serif; /* Readable font */
+        }
+        
+    </style>
+    <script src="https://code.jquery.com/jquery-4.0.0.slim.min.js"></script>
+    <link href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.min.css" rel="stylesheet" crossorigin="anonymous"> 
+    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.plot.ly/plotly-3.4.0.min.js" charset="utf-8"></script>
+    </head>
+<body>
+    <div class="center full-container">
+        <nav class="toc toc-right js-toc relative z-1 transition--300 absolute pa4 pt5 is-position-fixed"></nav>
+        <div class="container pa4 pt5">
+        <header class="report-header">
+            <h1>NemaScan Report for ben1</h1>
+            <p class="meta">
+            </p>
+        </header>
+        <main id="report_body" class="js-toc-content">
+            <div class="section" id="usage">
+                <h1 id="usage_title">Usage</h1>
+                <p>This interactive (HTML) or fixed report (PDF) will provide information for a genome-wide association 
+                    study (GWAS) using the NemaScan (<a href="http://dx.doi.org/10.1093/g3journal/jkac114">Widmayer <i>et al.</i>, 
+                    2022</a>) mapping process. The GitHub repo can be found <a href="https://github.com/AndersenLab/NemaScan">here</a>.
+                </p>
+            </div>
+
+            <div class="section" id="strain_issues">
+                <h1 id="strain_issues_title">Strain Issues</h1>
+                <p>All strain names are converted to the isotype reference strain name, which can be queried 
+                    <a href="https://caendr.org/data/strain_database">here</a>. If you submitted replicate data 
+                    for an individual strain, these data were averaged to one mean value for that strain. Isotype reference 
+                    strains are used because other strains in the isotype are highly similar at the genotype level. Inclusion 
+                    as separate strains in the GWAS will give incorrect mappings. For some strains, the historical strain name 
+                    has been replaced with a new isotype reference strain (e.g., CB4858). We found that many of these old CB 
+                    strains were not the correct genotype and differed between the source lab, the CGC, and other labs in the 
+                    community. Please see strain issues (<a href="https://caendr.org/data/data-release/c-elegans/latest/strain_issues"><i>C. 
+                        elegans</i></a>, <a href="https://caendr.org/data/data-release/c-briggsae/latest/strain_issues"><i>C. briggsae
+                    </i></a>, and <a href="https://caendr.org/data/data-release/c-tropicalis/latest/strain_issues"><i>C. tropicalis</i></a>) 
+                    for a more complete explanation.
+                    
+                <div class="note-box" id="issues_box">
+                </div>
+            </div>
+            <div class="section" id="manhattan_plots">
+                <h1 id="manhattan_plots_title">Manhattan Plots</h1>
+                <p>A genome-wide association study (GWAS) was performed by testing the correlation of a marker genotype difference 
+                    with a phenotypic variation. These tests correct for relatedness among individuals in your mapped population 
+                    using a genomic relatedness matrix (or “kinship matrix”) and the first principal component of the genotype matrix 
+                    comprising the mapped strain genotypes. This analysis was performed with GCTA using two different kinship matrices: 
+                    one constructed specifically with inbred model organisms in mind (INBRED) and one which is constructed from all 
+                    markers except those on the chromosome of the tested marker (“leave-one-chromosome-out”; LOCO). The INBRED kinship 
+                    matrix more heavily corrects for genetic stratification at the tested marker, and the LOCO kinship matrix does not, 
+                    and could therefore increase power in certain contexts. <br>
+                    <ul>
+                        <li>Every point is a SNV marker used in the GWAS test.</li>
+                        <li>Points are colored red if they pass the genome-wide corrected significance threshold:
+                            <ul>
+                                <li>The horizontal solid line corresponds to a stricter Bonferroni (BF) threshold, which is based on the 
+                                    number of markers in the analysis.</li>
+                                <li>The horizontal dash line corresponds to a more permissive EIGEN threshold, which corrects for the 
+                                    number of independent markers in your data set. This threshold takes advantage of the extensive LD 
+                                    in selfing Caenorhabditis species to limit the number of “unique” markers. (See <a href="http://dx.doi.org/10.7554/eLife.40260">Zdraljevic et al. 
+                                    2019 (PMID: 30958264)</a> for more information)</li>
+                                <li>If you selected a custom threshold, only this threshold is shown as a dotted line.</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </p>
+            </div>
+            <div class="section" id="inbred">
+            </div>
+            <div class="section" id="loco">
+            </div>
+            <br>
+            <div class="section" id="citations">
+                <h1 id="citations_title">Please kindly cite the following publications</h1>
+                <ul>
+                    <li>Widmayer SJ, Evans KS, Zdraljevic S, and Andersen EC (2022) Evaluating the power and limitations of genome-wide association mapping in C. elegans. G3, May 10; DOI: <a href="https://dx.doi.org/10.1093/g3journal/jkac114">10.1093/g3journal/jkac114</a>.</li>
+                    <li>Lee D, Zdraljevic S, Stevens L, Wang Y, Tanny RE, Crombie TA, Cook DE, Webster AK, Chirakar R, Baugh LR, Sterken M, Braendle C, Felix M-A, Rockman MV, and Andersen EC (2021) Balancing selection maintains ancient genetic diversity in C. elegans. Nature Ecology and Evolution, Apr 5; DOI: <a href="https://dx.doi.org/10.1038/s41559-021-01435-x">10.1038/s41559-021-01435-x</a>.</li>
+                    <li>Zdraljevic S, Fox BW, Strand C, Panda O, Tenjo-Castano FJ, Brady SC, Crombie TA, Doench JG, Schroeder FC, and Andersen EC (2019) Natural variation in arsenic toxicity is explained by differences in branched chain amino acid metabolism eLife, Apr 8; DOI: <a href="https://dx.doi.org/10.7554/eLife.40260">10.7554/eLife.40260</a>.</li>
+                    <li>Cook DE, Zdraljevic S, Roberts JP, Andersen EC (2016) CeNDR, the Caenorhabditis elegans Natural Diversity Resource. Nucleic Acids Research, Oct 3; <a href="https://dx.doi.org/10.1093/nar/gkw893">10.1093/nar/gkw893</a>.</li>
+                </ul>
+            </div>
+        </main>
+    </div>
+    </div>
+</body>
+<script>
+const all_data=ALLDATA;
+
+const variant_mapping={
+    "Intergenic": "Intergenic",
+    "Intronic": "Genic Non-coding",
+    "Missense": "Coding-change",
+    "Synonymous": "Synonymous",
+    "3'-UTR": "Genic Non-coding",
+    "5'-UTR": "Genic Non-coding",
+    "Frameshift": "Coding-change",
+    "Nonframeshift deletion": "Coding-change",
+    "Non-coding": "Genic Non-coding", 
+    "Splice region": "Genic Non-coding",
+    "Start lost": "Coding-change",
+    "Start gained": "Coding-change",
+    "Stop retained": "Coding-change",
+    "Stop lost": "Coding-change",
+    "Stop gained": "Coding-change",
+    "ncRNA Splicing": "RNA",
+    "ncRNA Exonic": "RNA",
+    "ncRNA Intronic": "RNA"
+};
+const variant_colors={
+    'Intergenic': "#777777",
+    'Genic Non-coding': '#ffb00c',
+    'Coding-change': '#cc2181',
+    'Synonymous': '#1d8838',
+    'RNA': '#4477aa'
+};
+const strand_colors={'+': "#000000", "-": "#999999"};
+
+/*
+alldata:
+- params:
+  - alpha: 0.05
+  - significance_threshold: BF
+  - significance_cutoff:
+    - [BF, 0.0071428571428571435]
+- stats:
+  - independent_tests: 12013.000000000038
+  - narrow_h2: 0.340631303704907
+- methods: [inbred, loco]
+- issues: [WARNING: Removing strain(s) CB4857, CB4858, PB306 because they do not fall into a defined isotype.]
+- chrom_regions:
+  - chroms: [I, II, III, IV, V, ...]
+  - starts: [3979, 7007, 7981, 48269, 1831, ...]
+  - ends: [15055433, 15272855, 13769991, 17489019, 20921686, ...]
+  - offsets: [0, 16715627, 18594194, 18754529, 24097442, ...]
+- broad:
+  - marker:
+    - I: [3979, 6689, 10291, 12921, 15024, ...]
+    - II: [7007, 7028, 7346, 7806, 18401, ...]
+    - III: [7981, 8039, 8672, 9532, 9904, ...]
+    - IV: [48269, 48435, 49409, 54234, 67913, ...]
+    - V: [1831, 5519, 5979, 7634, 11722, ...]
+    - X: [303285, 305933, 307981, 333581, 337651, ...]
+    - MtDNA: [217, 1819, 2912, 3000, 3074, ...]
+  - phenotype: [120.732512, -47.731138, -11.427605, -46.660877, -34.553171, ...]
+  - strain: [BRC20067, BRC20263, CB4852, CB4856, CX11262, ...]
+  - qtl_genotype:
+    - II:3621475:
+      - ref: C
+      - alt: T
+      - genotype: [-1, -1, -1, -1, -1, ...]
+    - II:6282615:
+      - ref: T
+      - alt: C
+      - genotype: [-1, -1, -1, -1, -1, ...]
+  - inbred:
+    - pval:
+      - I: [0.464559, 0.594225, 0.523448, 0.414281, 0.333188, ...]
+      - II: [0.847299, 0.681718, 0.480654, 0.789917, 0.869883, ...]
+      - III: [0.397779, 0.640962, 0.144214, 0.969046, 0.306255, ...]
+      - IV: [0.328475, 0.947659, 0.440334, 0.0698536, 0.809256, ...]
+      - V: [0.940115, 0.302305, 0.847758, 0.931504, 0.810096, ...]
+      - X: [0.336278, 0.583787, 0.52017, 0.815539, 0.872251, ...]
+      - MtDNA: [0.574365, 0.308205, 0.930482, 0.058072, 0.890879, ...]
+    - logpval:
+      - I: [0.33295912182695653, 0.22604908068171348, 0.2811264552167521, 0.38270498411510967, 0.47731064840459647, ...]
+      - II: [0.0719633061562448, 0.16639523879093818, 0.3181674391405272, 0.10241853951425418, 0.06053915642895455, ...]
+      - III: [0.4003581483731149, 0.19316771725108237, 0.8409925771504722, 0.013655606775860784, 0.5139168121631388, ...]
+      - IV: [0.4834976786923592, 0.023347908505649693, 0.35621777958181483, 1.1558112070179933, 0.09191407195970312, ...]
+      - V: [0.026819017878395846, 0.5195546697111946, 0.07172810324322669, 0.030815275846431244, 0.09146351223270226, ...]
+      - X: [0.47330154419631265, 0.2337455802817593, 0.2838546986802437, 0.08855526567238362, 0.05935852397875329, ...]
+      - MtDNA: [0.24081203250180533, 0.5111603200147586, 0.03129202379735805, 1.2360332166047587, 0.050181278231159206, ...]
+    - QTL:
+      - II:3621475: [II, 3291927, 3977000, 3621475, 5.919269]
+  - loco:
+    - QTL:
+      - II:3621475: [II, 1463889, 3977000, 3621475, 8.111909]
+      - II:6282615: [II, 5166879, 7333755, 6282615, 6.297857]
+    - pval:
+      - I: [0.402611, 0.630945, 0.458585, 0.358341, 0.306156, ...]
+      - II: [0.806873, 0.562486, 0.369865, 0.823794, 0.280289, ...]
+      - III: [0.313052, 0.590419, 0.128895, 0.765336, 0.253597, ...]
+      - IV: [0.298918, 0.786554, 0.354498, 0.062717, 0.69187, ...]
+      - V: [0.97735, 0.328756, 0.937968, 0.992749, 0.930703, ...]
+      - X: [0.414299, 0.354944, 0.376924, 0.857288, 0.858449, ...]
+      - MtDNA: [0.573703, 0.300776, 0.921703, 0.0557134, 0.882885, ...]
+    - logpval:
+      - I: [0.39511436364001384, 0.20000849691682326, 0.338580154847616, 0.44570349868549997, 0.5140572249058327, ...]
+      - II: [0.09319481687599905, 0.2498882824582206, 0.43195676364551366, 0.08418137549732495, 0.5523939458823881, ...]
+      - III: [0.5043835172863421, 0.22883967513084078, 0.8897639291518418, 0.11614785777517149, 0.5958558883737122, ...]
+      - IV: [0.5244479321828618, 0.10427145600703627, 0.45038621066826023, 1.202614723834559, 0.15997550032138394, ...]
+      - V: [0.009949882700454606, 0.4831263122873938, 0.027811977890106702, 0.0031605417304109698, 0.031188886193141734, ...]
+      - X: [0.38268611496384974, 0.44984016077427, 0.4237462087013024, 0.06687325532407315, 0.0662855009416142, ...]
+      - MtDNA: [0.2413128791047663, 0.5217568206182999, 0.03540899894676221, 1.2540403372113242, 0.0540958616749699, ...]
+    - LD_matrix:
+      - marker: [II:3621475, II:6282615]
+      - LD:
+        - [1, 0.919668403076771]
+        - [0.919668403076771, 1]
+- fine:
+  - II:6282615:
+    - marker: [5166879, 5167108, 5167172, 5167930, 5168048, ...]
+    - LD: [0.109591, 0.0345498, 0.0529517, 0.0152246, 0.0910843, ...]
+    - variants:
+      - [N/A, N/A, Intergenic, N/A, A, ...]
+      - [N/A, N/A, Intergenic, N/A, G, ...]
+      - [N/A, N/A, Intergenic, N/A, G, ...]
+      - [N/A, N/A, Intergenic, N/A, T, ...]
+      - [N/A, N/A, Intergenic, N/A, A, ...]
+      ...
+    - haplotype:
+      - []
+      - []
+      - [(5015974, 5478430, 'QG2818', '#0000FF'), (5478430, 5486220, 'ED3048', '#0000FF'), (5486220, 5553304, 'QG2818', '#0000FF'), (5553304, 11834515, 'NIC2115', '#0000FF'), (11834515, 11983819, 'JU2466', '#0005FF'), ...]
+      - [(4983038, 9949004, 'XZ1515', '#FFC100'), (9949004, 10412096, 'ECA778', '#FF8C00'), (10412096, 10420337, 'ECA3516', '#FFA400'), (10420337, 10608219, 'ECA706', '#FF005A'), (10608219, 11578688, 'XZ1515', '#FFC100'), ...]
+      - [(4753241, 5667867, 'EG4946', '#0053FF'), (5667867, 5668124, 'NIC2115', '#0000FF'), (5668124, 5901035, 'EG4946', '#0053FF'), (5901035, 5902917, 'NIC2115', '#0000FF'), (5902917, 5923256, 'QG2818', '#0000FF'), ...]
+      ...
+  - II:3621475:
+    - marker: [1463889, 1463999, 1464084, 1464300, 1464330, ...]
+    - LD: [0.00794772, 0.00679679, 0.00679679, 0.00537305, 0.00458016, ...]
+    - variants:
+      - [N/A, N/A, Intronic, N/A, A, ...]
+      - [N/A, N/A, Intronic, N/A, A, ...]
+      - [WBGene00021791, N/A, Synonymous, 270G, C, ...]
+      - [WBGene00021791, N/A, Missense, 227A>227G, C, ...]
+      - [WBGene00021791, N/A, Missense, 217L>217P, G, ...]
+      ...
+    - haplotype:
+      - [(1105, 2227104, 'NIC2115', '#0000FF')]
+      - [(1392144, 1509827, 'ECA2615', '#001DFF'), (1509827, 1510041, 'NIC2115', '#0000FF'), (1510041, 1791761, 'ECA2615', '#001DFF')]
+      - [(1105, 2227104, 'NIC2115', '#0000FF'), (2227104, 2411909, 'NIC2', '#0000FF'), (2411909, 2412772, 'NIC2115', '#0000FF'), (2412772, 2470935, 'NIC2', '#0000FF'), (2470935, 2477379, 'NIC2115', '#0000FF'), ...]
+      - [(704426, 1665244, 'XZ1515', '#FFC100'), (1665244, 1727206, 'ECA1887', '#FF5700'), (1727206, 2201691, 'XZ1515', '#FFC100'), (2201691, 2222797, 'CB4856', '#FF009B'), (2222797, 2365605, 'XZ1515', '#FFC100'), ...]
+      - [(1429845, 1739354, 'EG4946', '#0053FF'), (1739354, 1739577, 'ECA2615', '#001DFF'), (1739577, 1900689, 'EG4946', '#0053FF'), (1900689, 1940872, 'ED3011', '#00B7FF'), (1940872, 2108513, 'CX11315', '#1BFF00'), ...]
+      ...
+  - inbred:
+    - II:3621475:
+      - pval: [0.754172, 0.575848, 0.769433, 0.717835, 0.348086, ...]
+      - logpval: [0.1225295955994865, 0.23969213718928625, 0.11382919129335216, 0.14397537027653987, 0.45831344366491045, ...]
+  - loco:
+    - II:6282615:
+      - pval: [0.789985, 0.29376, 0.50773, 0.146824, 0.289094, ...]
+      - logpval: [0.10238115488560293, 0.5320073404788516, 0.29436717488663927, 0.8332029484006249, 0.5389609217984944, ...]
+    - II:3621475:
+      - pval: [0.227509, 0.355787, 0.355787, 0.861489, 0.423518, ...]
+      - logpval: [0.6430014184660987, 0.4488099245247445, 0.4488099245247445, 0.06475026350881415, 0.373128126928198, ...]
+- mediation:
+  - II:5166879-7333755:
+    - [var, estimate, ci_lower, ci_upper, prob, ...]
+    - [med, 0.014657767025361581, -0.027627676735683043, 0.06291870761778366, 0.488, ...]
+    - [direct, 0.8701760607838909, 0.46676706301591475, 1.2361326699551574, 0, ...]
+    - [total, 0.8848338278092525, 0.48257285257187615, 1.2369731423188814, 0, ...]
+    - [prop_med, 0.016565559051525573, -0.02705769936961075, 0.0771783874099305, 0.488, ...]
+    ...
+  - II:1463889-3977000:
+    - [var, estimate, ci_lower, ci_upper, prob, ...]
+    - [med, -0.011519974312770357, -0.08206549668528439, 0.07838117182894573, 0.774, ...]
+    - [direct, 1.0389762521699681, 0.5460869785608391, 1.4968969635342402, 0.004, ...]
+    - [total, 1.0274562778571976, 0.5323066826742777, 1.4902985438745613, 0, ...]
+    - [prop_med, -0.011212130930569365, -0.10751350776219228, 0.08877314055392246, NA, ...]
+    ...
+  - II:3291927-3977000:
+    - [var, estimate, ci_lower, ci_upper, prob, ...]
+    - [med, 0.07505161645004019, -0.0177398967612379, 0.22034821028505286, 0.134, ...]
+    - [direct, 1.0861680713678499, 0.7492619566357357, 1.3501274884823264, 0, ...]
+    - [total, 1.1612196878178902, 0.8589194986562745, 1.3957331652321974, 0, ...]
+    - [prop_med, 0.06463171201572863, -0.014718706069545793, 0.19364359605256448, 0.134, ...]
+    ...
+  */
+
+function create_broad_manhattan_plot(method, div, dom_id) {
+    div.append("<div id='" + dom_id + "' style='height:300px;'></div><br>");
+    var traces = [];
+    const title=method;
+    // Plot chromosome boxes
+    all_data.chrom_regions.chroms.slice(0, -1).forEach((chrom, idx) => {
+        var new_trace = {
+            x: [all_data.chrom_regions.offsets[idx],
+                all_data.chrom_regions.ends[idx] + all_data.chrom_regions.offsets[idx],
+                all_data.chrom_regions.ends[idx] + all_data.chrom_regions.offsets[idx],
+                all_data.chrom_regions.offsets[idx],
+                all_data.chrom_regions.offsets[idx]],
+            y: [0, 0, all_data.broad.maxY, all_data.broad.maxY, 0],
+            mode: 'lines',
+            type: 'scatter',
+            showlegend: false,
+            line: {
+                color: 'black',
+                width: 1
+            }
+        };
+        traces.push(new_trace);
+    });
+
+    // Plot chromosome points
+    var xticks=[], xlabels=[], annotations=[];
+    all_data.chrom_regions.chroms.forEach((chrom, idx0) => {
+        // get values for x axis labels
+        for (let i=1; i<all_data.chrom_regions.ends[idx0] / 5e6; i++){
+            xticks.push(i * 5e6 + all_data.chrom_regions.starts[idx0] + all_data.chrom_regions.offsets[idx0]);
+            xlabels.push(i * 5);
+        }
+        // create chromosome labels
+        annotations.push({
+            x: (all_data.chrom_regions.starts[idx0] + all_data.chrom_regions.ends[idx0]) / 2 + all_data.chrom_regions.offsets[idx0],
+            y: all_data.broad.maxY * 1.04,
+            xref: 'x',
+            yref: 'y',
+            text: chrom,
+            showarrow: false,
+            align: 'center'
+        });
+        var upper_p, lower_p=1e6, sig_label, name, showlegend, sig_line, sig_color;
+        for (var i=0; i<=all_data.params.significance_cutoff.length; i++) {
+            upper_p = lower_p;
+            if (i < all_data.params.significance_cutoff.length) {
+                sig_label = all_data.params.significance_cutoff[i][0];
+                lower_p = -Math.log10(all_data.params.significance_cutoff[i][1]);
+                sig_line = all_data.params.significance_cutoff[i][2];
+                sig_color = all_data.params.significance_cutoff[i][3];
+            } else {
+                lower_p = 0;
+                sig_label = "Nonsignificant";
+                sig_line = 'solid';
+                sig_color = '#000000';
+            }
+            // If this is the first chromosome, add lines to legend
+            if (idx0 == 0) {
+                // plot sig lines
+                name = sig_label;
+                showlegend = true;
+            } else {
+                name = chrom + " " + sig_label + " sigline";
+                showlegend = false;
+            }
+            if (i < all_data.params.significance_cutoff.length) {
+                // If not a nonsignificant group, add sig line to graph
+                var new_trace = {
+                    x: [all_data.chrom_regions.offsets[idx0],
+                        all_data.chrom_regions.ends[idx0] + all_data.chrom_regions.offsets[idx0]],
+                    y: [lower_p, lower_p],
+                    mode: 'lines',
+                    type: 'scatter',
+                    showlegend: showlegend,
+                    line: {
+                        color: 'black',
+                        width: 1,
+                        dash: sig_line
+                    },
+                    name: name,
+                };
+                traces.push(new_trace);
+            }
+            
+            var X=[], Y=[], labels=[], logpval;
+            all_data.broad[method]['pval'][chrom].forEach((pval, idx2) => {
+                logpval = all_data.broad[method]['logpval'][chrom][idx2];
+                if (logpval < upper_p && logpval >= lower_p) {
+                    X.push(all_data.broad.marker[chrom][idx2] + all_data.chrom_regions.offsets[idx0]);
+                    Y.push(logpval);
+                    labels.push("SNP: " + chrom + ":" + all_data.broad.marker[chrom][idx2] + "<br><i>p</i>-value: " + pval.toPrecision(3) + "<br>-log<sub>10</sub>(<i>p</i>): " + logpval.toPrecision(3))
+                }
+
+            });
+            var new_trace = {
+                x: X,
+                y: Y,
+                mode: 'markers',
+                type: 'scatter',
+                showlegend: false,
+                marker: {
+                    size: 5,
+                    color: sig_color,
+                    opacity: 0.3 + 0.7 * (i < all_data.params.significance_cutoff.length)
+                },
+                text: labels,
+                hoverinfo: 'text',
+                name: chrom + " " + sig_label,
+            };
+            traces.push(new_trace);
+        }
+    });
+    
+    var layout = {
+        title: {
+            text: title.toUpperCase()
+        },
+        annotations: annotations,
+        xaxis: {
+            title: {
+                text:'Genomic Position (Mb)'
+            },
+            tickmode: 'array',
+            ticks: 'outside',
+            tickvals: xticks,
+            ticktext: xlabels,
+            showgrid: false,
+            zeroline: false,
+            showline: false,
+            range: [0, (all_data.chrom_regions.ends[all_data.chrom_regions.ends.length-1] +
+                        all_data.chrom_regions.offsets[all_data.chrom_regions.ends.length-1]) * 1.035]
+                    },
+        yaxis: {
+            title: {
+                text: '-log<sub>10</sub>(<i>p</i>)'
+            },
+            showgrid: false,
+            ticks: 'outside',
+            range: [0, all_data.broad.maxY * 1.04]
+        },
+        margin: {
+            l: 37,
+            r: 0,
+            t: 40,
+            b: 37
+        },
+        height: 300
+    };
+    var plot = Plotly.newPlot(dom_id, traces, layout);
+    return plot
+}
+
+function create_table(title, div, dom_id, header, data) {
+    var title_div="";
+    if (title != "") {
+        title_div = "<h2 id='" + dom_id + " _title'>" + title + "</h2>";
+    }
+    div.append("<div id='" + dom_id + "_div'>" + title_div + '<table style="width: 100%" id="' + dom_id + '"><thead><tr></tr></thead><tbody></tbody></table></div>');
+    var header_div = $("#" + dom_id + " thead tr")
+    header.forEach((entry, idx) => {
+        header_div.append('<th>' + entry + '</th>');
+    });
+    var header_arr = header.map(label => ({id: label, header: label}));
+    
+    var table = new DataTable("#" + dom_id, {
+        autoWidth: false,
+        scrollX: true,
+        // columns: header,//.map(label => ({id: label, header: label})),
+        data: data,
+        deferRender: true,
+        scroller: true,
+        fixedHeader: false,
+        fixedColumns: false
+    });
+    table.columns.adjust().draw();
+    // table.rows.add(data).draw();
+    
+}
+
+function add_method_section(method) {
+
+    var method_div=$("#" + method), toc_entries=[];
+    toc_entries.push([method.toUpperCase(), method, 1])
+    method_div.append("<h1 id='" + method + "_title'>" + method.toUpperCase() + "</h1>");
+    if (method == "inbred") {
+        method_div.append("<p>This approach is the default kinship matrix construction method, designed for inbred model organisms (See <a href='https://yanglab.westlake.edu.cn/software/gcta/#MakingaGRM'>https://yanglab.westlake.edu.cn/software/gcta/#MakingaGRM</a> for more info).</p>");
+    } else {
+        method_div.append("<p>LOCO may provide increased power to detect QTL because it does not correct for relatedness (or stratification) on the chromosome of each tested marker, sometimes providing higher power to detect linked QTL or QTL within divergent regions. However, this higher power also comes with higher false discovery rates. The GWAS mapping still uses the first principal component of the genotype matrix comprising the mapped strain genotypes. For more info, check out <a href='http://dx.doi.org/10.1093/g3journal/jkac114'>Widmayer et al. 2022</a>.</p>");
+    }
+    var sig_qtl = [];
+    Object.entries(all_data.broad[method]['QTL']).forEach((marker_info) => {
+        sig_qtl.push([marker_info[1][0], marker_info[0], marker_info[1][4], marker_info[1][1], marker_info[1][3], marker_info[1][2]]);
+    });
+
+    if (sig_qtl.length == 0) {
+        method_div.append("<p>No significant QTL were detected using this approach.</p>");
+        return
+    }
+    var header = ['chrom', 'marker', 'log10p', 'start_pos', 'peak_pos', 'end_pos'];
+    create_table("Significant QTL", method_div, method + "_qtl_table", header, sig_qtl);
+    toc_entries.push(["Significant QTL", method + "_qtl_table_div", 2])
+
+    method_div.append("<div id='" + method + "_pxg_plots'><h2 id='" + method + "_pxg_title'>Phenotype by Genotype Split</h2><p>For each detected QTL, we can observe the phenotypes of the strains with the reference (REF) allele (<i>i.e.</i>, same genotype as the reference strain) compared to the phenotypes of the strains with the alternative (ALT) allele (i.e., genotype different than the reference strain). A QTL is defined as a region where genetic variation is correlated with phenotypic variation, so we expect to see a difference in phenotype between the REF and ALT groups. In a best-case scenario, we like to see a large phenotypic difference between the REF and ALT groups and many strains in both groups. If one group has a small number of strains (just over 5% of the strains in the mapping), this QTL could be caused by a spurious association of a variant with a phenotypic difference. It is also important to ensure that the mean phenotype of neither group is driven by a small number of outlier strains.</p>")
+    toc_entries.push(["Phenotype by genotype split", method + "_pxg_plots", 2]);
+    var pxg_div_name, container_div;
+    sig_qtl.forEach((row, idx) => {
+        if (idx % 3 == 0) {
+            method_div.append("<div class='container'><div class='row' id='pxg_" + method + "_" + idx + "_row'></div></div>");
+            container_div = $("#pxg_" + method + "_" + idx + "_row");
+            container_div.append("<div class='col-md-4' style='width:33%;' id='" + "pxg_" + method + "_" + idx + "'></div>");
+            container_div.append("<div class='col-md-4' style='width:33%;' id='" + "pxg_" + method + "_" + (idx + 1) + "'></div>");
+            container_div.append("<div class='col-md-4' style='width:33%;' id='" + "pxg_" + method + "_" + (idx + 2) + "'></div>");
+        }
+        pxg_div_name = "pxg_" + method + "_" + idx;
+        create_PxG_plot(pxg_div_name, row[1], method);
+    });
+    method_div.append("</div><br>");
+    if (sig_qtl.length > 1) {
+        add_interQTL_linkage_plot(method_div, method);
+        toc_entries.push(["Linkage disequilibrium", method + "_interQTL_LD", 2]);
+    }
+    for (var i=0; i<sig_qtl.length; i++) {
+        toc_entries = toc_entries.concat(add_qtl_interval_section(method_div, method, sig_qtl[i][1]));
+    }
+    return toc_entries
+}
+
+function create_PxG_plot(div_name, marker, method) {
+    var traces=[], Y0=[], labels0=[], Y1=[], labels1=[], colors0=[], colors1=[];
+    var div = $("#" + div_name);
+    div.append("<div id='" + div_name + "_plot'></div");
+    all_data.broad.strain.forEach((strain, idx) => {
+        if (all_data.broad.qtl_genotype[marker]['genotype'][idx] == -1){
+            if (all_data.highlight_strains.includes(strain)){
+                colors0.push('#D41159');
+                Y0.push(all_data.broad.phenotype[idx]);
+                labels0.push(strain);
+            } else {
+                colors0.push('#000000');
+                Y0.push(all_data.broad.phenotype[idx]);
+                labels0.push(strain);
+            }
+        } else {
+            if (all_data.highlight_strains.includes(strain)){
+                colors1.push('#D41159');
+                Y1.push(all_data.broad.phenotype[idx]);
+                labels1.push(strain);
+            } else {
+                colors1.push('#000000');
+                Y1.push(all_data.broad.phenotype[idx]);
+                labels1.push(strain);
+            }
+        }
+    });
+    traces.push({
+        type: 'box',
+        y: Y0,
+        name: 'REF',
+        text: labels0,
+        fillcolor: '#FFFFFF',
+        line: {
+            color: colors0,
+        },
+        marker: {
+            color: colors0,
+            opacity: 0.8,
+        },
+        hoverinfo: 'text',
+        hoveron: 'points',
+        boxpoints: 'all',
+        showlegend: false,
+        pointpos: 0,
+    });
+    traces.push({
+        type: 'box',
+        y: Y1,
+        name: 'ALT',
+        text: labels1,
+        fillcolor: '#FFFFFF',
+        line: {
+            color: colors1,
+        },
+        marker: {
+            color: colors1,
+            opacity: 0.8,
+        },
+        hoverinfo: 'text',
+        hoveron: 'points',
+        boxpoints: 'all',
+        showlegend: false,
+        pointpos: 0,
+    });
+    var layout={
+        title: {
+            text: marker,
+            font: {
+                size: 20,
+            },
+            x: 0.5
+        },
+        xaxis: {
+            title: {
+                text: "Genotype"
+            },
+            showline: true,
+            linewidth: 2,
+            linecolor: 'black',
+            mirror: true,
+            ticks: 'outside',
+            tickvals: [0, 1],
+            ticktext: ['REF', 'ALT'],
+            tickmode: 'array'
+        },
+        yaxis: {
+            title: {
+                text: "Trait Value"
+            },
+            showline: true,
+            linewidth: 2,
+            linecolor: 'black',
+            ticks: 'outside',
+            mirror: true,
+        },
+        margin: {
+            l: 50,
+            r: 10,
+            t: 30,
+            b: 37
+        },
+        height: 400,
+    };
+    var plot = Plotly.newPlot(div_name + "_plot", traces, layout);
+}
+
+function add_interQTL_linkage_plot(div, method) {
+    var width=Math.min(200*(all_data.broad[method]['LD_matrix']['marker'].length), 625);
+    div.append("<div id='" + method + "_interQTL_LD'><h2 id='" + method + "_ld_title'>Linkage Disequilibrium</h2><p>If your trait has multiple QTL, we calculate linkage disequilibrium (LD) between them. This is useful because sometimes we find that one strong QTL might be in linkage disequilibrium to a secondary QTL (even if it exists on another chromosome). If this is the case, the secondary QTL might not contain a true causal variant, thus it is important to check this before narrowing the QTL experimentally.</p><br><div id='" + method + "_interQTL_LD_plot' style='height: " + (width + 70) + "; width: " + (width + 175) + ";'></div></div>")
+    var div_name=method + "_interQTL_LD_plot", ld_data=[], labels=[];
+    all_data.broad[method]['LD_matrix']['marker'].forEach((marker) => {
+        ld_data.push(new Array(all_data.broad[method]['LD_matrix']['marker'].length).fill(1));
+    });
+    for (var i=0; i<all_data.broad[method]['LD_matrix']['marker'].length; i++) {
+        var marker1 = all_data.broad[method]['LD_matrix']['marker'][i];
+        labels.push([]);
+        for (var j=0; j<all_data.broad[method]['LD_matrix']['marker'].length; j++) {
+            var marker2 = all_data.broad[method]['LD_matrix']['marker'][j];
+            ld_data[i][j] = all_data.broad[method]['LD_matrix']['LD'][i][j];
+            labels[labels.length-1].push(marker1 + " x " + marker2 + " " + ld_data[i][j].toPrecision(4));
+        }
+    }
+    var traces=[{
+        z: ld_data,
+        x: all_data.broad[method]['LD_matrix']['marker'],
+        y: all_data.broad[method]['LD_matrix']['marker'],
+        zmin: -1,
+        zmax: 1,
+        type: 'heatmap',
+        hoverongaps: false,
+        text: ld_data,
+        hoverinfo: 'text',
+        texttemplate: "%{text:0.3f}",
+        colorbar: {
+            title:  {
+                text: "R<sup>2</sup>",
+            }
+        }
+    }],layout={
+        xaxis: {
+            showline: true,
+            linewidth: 2,
+            linecolor: 'black',
+            mirror:true,
+        },
+        yaxis: {
+            showline: true,
+            linewidth: 2,
+            linecolor: 'black',
+            mirror: true,
+        },
+        margin: {
+            l: 100,
+            r: 0,
+            t: 0,
+            b: 70
+        },
+        height: width + 70,
+        width: width + 175,
+        coloraxis: {
+            title:  "R<sup>2</sup>",
+        }
+    };
+    var plot = Plotly.newPlot(div_name, traces, layout);
+}
+
+function add_qtl_interval_section(div, method, marker) {
+    var toc_entries=[];
+    div.append("<div id='" + marker + "_div'><h2 id='" + method + "_" + marker + "_title'>" + marker + "</h2>");
+    toc_entries.push([marker, marker + "_div", 2]);
+    div.append("<div id='" + marker + "_finemapping'><h3 id='" + method + "_" + marker + "_finemapping_title'>Fine Mapping</h3>");
+    toc_entries.push(["Fine mapping", marker + "_finemapping", 3]);
+    div.append("<p>Fine mapping was performed by evaluating the genotype-phenotype relationships for all variants nearby the QTL identified from the GWAS mapping using a vcf containing imputed variants. The original mapping only used a subset of marker variants. Only SNVs were considered in this mapping. Other variant types could underlie differences in your trait.</p>");
+    div.append("<p>Each variant is represented by a vertical line, colored by the predicted variant impact as shown in the EFFECT plot key. Genes are represented by horizontal lines with an arrow showing the direction of the gene. The peak marker from the GWAS mapping is shown as a vertical dotted blue line.</p>");
+    add_variant_plot(div, method, marker);
+    div.append("<br><p>This second plot is very similar to the first. Here, each variant is represented by a diamond colored by the linkage to the peak marker (colored in red). This plot can be useful to determine what the strucutre of your region looks like. If you have many variants with high linkage to your peak marker, it is important to remember that any of those variants could be causal.</p>");
+    add_LD_plot(div, method, marker);
+    div.append("</div><br><div id='" + method + "_variant_table'><h3 id='" + method + "_" + marker + "_variants_title'>Intragenic variants in interval</h3>");
+    var data=[], header=['marker', 'ref', 'alt', 'WBGeneID', 'gene name', 'consequence', 'variant -log<sub>10</sub>(<i>p</i>)'];
+    var start=all_data.broad[method]['QTL'][marker][1], end=all_data.broad[method]['QTL'][marker][2], chrom=all_data.broad[method]['QTL'][marker][0];
+    all_data.fine[marker]['variants'].forEach((variant, idx) => {
+        var x=all_data.fine[marker]['marker'][idx];
+        if (x >= start && x <= end && variant[2] != 'N/A' && variant[2] != "Intergenic") {
+            data.push([chrom + ":" + x, variant[4], variant[5], variant[0], variant[1], variant[2], variant[3]]);
+        }
+    });
+    create_table("", div, method + "_" + chrom + "_" + start + "_variant_table", header, data);
+    div.append("</div><br>");
+    toc_entries.push(["Intragenic variants in interval", method + "_" + chrom + "_" + start + "_variant_table_div", 3]);
+
+    if (Object.hasOwn(all_data, 'mediation')) {
+        add_mediation(div, method, marker);
+        toc_entries.push(["Mediation analysis", method + "_" + marker + "_mediation", 3]);
+    }
+
+    if (Object.hasOwn(all_data.fine[marker], 'haplotype')) {
+        add_haplotypes(div, method, marker);
+        toc_entries.push(["Haplotype", method + '_' + marker + "_haplotype", 3]);
+    }
+    div.append("</div>");
+    return toc_entries;
+}
+
+function add_variant_plot(div, method, marker) {
+    var X={}, Y={}, labels={}, chrom=all_data.broad[method]['QTL'][marker][0], maxY=0, idx1=0;
+    var start=all_data.broad[method]['QTL'][marker][1], peak=all_data.broad[method]['QTL'][marker][3], end=all_data.broad[method]['QTL'][marker][2];
+    var genes_X0=[], genes_Y0=[], genes_X1=[], genes_Y1=[];
+    Object.values(variant_mapping).forEach((group) => {
+        X[group] = [];
+        Y[group] = [];
+        labels[group] = [];
+    });
+    all_data.fine[marker]['variants'].forEach((variant, idx) => {
+        var x=all_data.fine[marker]['marker'][idx];
+        if (x >= start && x <= end) {
+            if (variant[2] != "N/A") {
+                var group=variant_mapping[variant[2]], logpval=all_data.fine[method][marker]['logpval'][idx1];
+                X[group].push(x/1e6);
+                Y[group].push(logpval);
+                labels[group].push(chrom + ":" + x + "<br>WB ID: " + variant[0] + "<br>Gene: " + variant[1] + "<br>Impact: " + variant[2] + "<br>AA change: " + variant[3]);
+                maxY = Math.max(maxY, logpval)
+            }
+            idx1 += 1;
+        }
+    });
+    var traces=[];
+    var minGeneY=all_data.genes[marker]['bounds'][0], maxGeneY=all_data.genes[marker]['bounds'][1];
+    minGeneY -= (maxGeneY - minGeneY) * 0.05;
+    maxGeneY += (maxGeneY - minGeneY) * 0.05;
+    all_data.genes[marker]['genes'].forEach(([strand, name, path_X, path_Y]) => {
+        traces.push({
+            x: path_X,
+            y: path_Y,
+            mode: 'lines',
+            fill: 'toself',
+            line: {
+                width: 0,
+            },
+            fillcolor: strand_colors[strand],
+            text: strand + " " + name,
+            hoverinfo: 'text',
+            hoveron: 'fills',
+            yaxis: 'y',
+            showlegend: false
+        });
+    });
+
+    Object.keys(X).forEach((group) => {
+        if (X[group].length > 0) {
+            traces.push({
+                x: X[group],
+                y: Y[group],
+                mode: 'markers',
+                type: 'scatter',
+                name: group,
+                showlegend: true,
+                marker: {
+                    size: 6,
+                    color: variant_colors[group],
+                    symbol: 23
+                },
+                text: labels[group],
+                hoverinfo: 'text',
+                yaxis: 'y2'
+            });
+        }
+    });
+
+    traces.unshift({
+        x: [peak/1e6, peak/1e6],
+        y: [-maxY * 0.025, maxY * 1.025],
+        mode: 'lines',
+        showlegend: false,
+        hoverinfo: 'none',
+        line: {
+            color:"#7777FF",
+            width: 2,
+            dash: 'dash'
+        },
+        yaxis: 'y2'
+    });
+    traces.push({
+        x: [peak/1e6, peak/1e6],
+        y: [minGeneY, maxGeneY],
+        mode: 'lines',
+        showlegend: false,
+        hoverinfo: 'none',
+        line: {
+            color:"#7777FF",
+            width: 2,
+            dash: 'dash'
+        },
+        yaxis: 'y'
+    });
+    traces.push({
+        x: [start/1e6, end/1e6],
+        y: [maxY * 1.025, maxY * 1.025],
+        mode: 'lines',
+        showlegend: false,
+        hoverinfo: 'none',
+        line: {
+            color:"#000000",
+            width: 4,
+        },
+        yaxis: 'y2'
+    });
+
+    var layout = {
+        grid: {
+            rows: 2,
+            columns: 1,
+            subplots: [['xy'], ['xy2']],
+            roworder: 'bottom to top'
+        },
+        xaxis: {
+            title: {
+                text:'Genomic Position (Mb)'
+            },
+            showline: true,
+            linewidth: 2,
+            linecolor: 'black',
+            mirror: true,
+            tickmode: 'array',
+            ticks: 'outside',
+            showgrid: false,
+            zeroline: false,
+            range: [start/1e6, end/1e6]
+        },
+        yaxis: {
+            fixedrange: true,
+            linewidth: 2,
+            linecolor: 'black',
+            mirror: true,
+            tickvals: [],
+            ticktext: [],
+            domain: [0.0, 0.2],
+            zeroline: false,
+            title: { text:'Genes' },
+            range: [minGeneY, maxGeneY]
+        },
+        yaxis2: {
+            fixedrange: true,
+            title: {
+                text: '-log<sub>10</sub>(<i>p</i>)'
+            },
+            showline: true,
+            linewidth: 2,
+            linecolor: 'black',
+            mirror: true,
+            showgrid: false,
+            ticks: 'outside',
+            domain: [0.2, 1.0],
+            zeroline: false,
+            range: [-maxY * 0.025, maxY * 1.025]
+        },
+        margin: {
+            l: 45,
+            r: 0,
+            t: 40,
+            b: 37
+        },
+        height: 500,
+        showlegend: true,
+        legend: {
+            x: 1.01,
+            y: 0.5,
+            title: {text: "EFFECT"},
+            titleclick: 'toggleothers',
+            titledoubleclick: 'toggle'
+        }
+    };
+    var div_name=method + "_" + marker + "_variant_plot";
+    div.append("<div id='" + div_name + "' style='height: 500px;'></div>")
+    var plot = Plotly.newPlot(div_name, traces, layout);
+    return plot
+}
+
+function add_LD_plot(div, method, marker) {
+    var X=[], Y=[], Z=[], labels=[], chrom=all_data.broad[method]['QTL'][marker][0], maxY=0, idx1=0;
+    var start=all_data.broad[method]['QTL'][marker][1], peak=all_data.broad[method]['QTL'][marker][3], end=all_data.broad[method]['QTL'][marker][2];
+    all_data.fine[marker]['variants'].forEach((variant, idx) => {
+        var x=all_data.fine[marker]['marker'][idx];
+        if (x >= start && x <= end) {
+            var logpval=all_data.fine[method][marker]['logpval'][idx1], ld=all_data.fine[marker]['LD'][idx];
+            X.push(x/1e6);
+            Y.push(logpval);
+            Z.push(ld);
+            labels.push(chrom + ":" + x + "<br>-log<sub>10</sub>(<i>p</i>): " + logpval + "<br>LD: " + ld.toPrecision(4));
+            maxY = Math.max(maxY, logpval)
+            idx1 += 1;
+        }
+    });
+
+    var traces=[{
+        x: X,
+        y: Y,
+        mode: 'markers',
+        showlegend: false,
+        hoverinfo: 'text',
+        text: labels,
+        marker: {
+            color: Z,
+            colorscale: [
+                [0, "FFFFAA"],
+                [0.5, "#44AABB"],
+                [1.0, "#003388"]
+            ],
+            line: {
+                color: '#000000',
+                width: 0.5,
+            },
+            showscale: true,
+            colorbar: {
+                title: {
+                    text: 'R<sup>2</sup>',
+                    side: 'top'
+                },
+            },
+            size: 7,
+        },
+    }];
+
+    traces.unshift({
+        x: [peak/1e6, peak/1e6],
+        y: [-maxY * 0.025, maxY * 1.025],
+        mode: 'lines',
+        showlegend: false,
+        hoverinfo: 'none',
+        line: {
+            color:"#7777FF",
+            width: 2,
+            dash: 'dash'
+        },
+    });
+
+    var layout = {
+        xaxis: {
+            title: {
+                text:'Genomic Position (Mb)'
+            },
+            showline: true,
+            linewidth: 2,
+            linecolor: 'black',
+            mirror: true,
+            tickmode: 'array',
+            ticks: 'outside',
+            showgrid: false,
+            zeroline: false,
+            range: [start/1e6, end/1e6]
+        },
+        yaxis: {
+            fixedrange: true,
+            title: {
+                text: '-log<sub>10</sub>(<i>p</i>)'
+            },
+            showline: true,
+            linewidth: 2,
+            linecolor: 'black',
+            mirror: true,
+            showgrid: false,
+            ticks: 'outside',
+            zeroline: false,
+            range: [-maxY * 0.025, maxY * 1.025]
+        },
+        margin: {
+            l: 45,
+            r: 0,
+            t: 40,
+            b: 37
+        },
+        height: 400,
+        coloraxis: {
+            cmin: 0,
+            cmax: 1
+        }
+    };
+    var div_name=method + "_" + marker + "_LD_plot";
+    div.append("<div id='" + div_name + "' style='height: 400px;'></div>")
+    var plot = Plotly.newPlot(div_name, traces, layout);
+    return plot
+}
+
+function add_mediation(div, method, marker) {
+    div.append("<div id='" + method + "_" + marker + "_mediation'><h3 id='" + method + "_" + marker + "_mediation_title'>Mediation analysis</h3>");
+    div.append("<p>Mediation analysis was performed to analyze if gene expression variation is significantly correlated with the phenotype (overlap of phenotype QTL with an expression QTL). Top candidates whose expression might mediate the phenotype QTL are shown below. For more information about mediation analysis, check out <a href='http://dx.doi.org/10.1534/g3.120.401310'>Evans and Andersen 2020 (PMID: 32385045</a>).</p>");
+    var start=all_data.broad[method]['QTL'][marker][1], end=all_data.broad[method]['QTL'][marker][2], chrom=all_data.broad[method]['QTL'][marker][0];
+    var region=chrom + ":" + start + "-" + end;
+    create_table("", div, method + "_" + chrom + "_" + start + "_mediation_table", all_data.mediation[region][0], all_data.mediation[region].slice(1, -1));
+    div.append("</div>")
+}
+
+function add_haplotypes(div, method, marker) {
+    div.append("<div id='" + method + '_' + marker + "_haplotype'><h3 id='" + method + "_" + marker + "_haplotype_title'>Haplotype</h3>");
+    div.append("<p>The following plot shows the genome-wide haplotype (genetic relatedness) of mapped strains split by REF or ALT marker genotype. This plot can be useful to help identify how many unique haplotypes are present in the REF or ALT groups. If you want to choose parent strains for a NIL cross to validate this QTL, you might want to choose strains in the major haplotype of the REF/ALT groups that also have distinct phenotypes.</p>");
+    var traces=[], strains=[], yticks=[], n0=0, n1=0, pos=0, chrom=all_data.broad[method]['QTL'][marker][0];
+    var start=all_data.broad[method]['QTL'][marker][1], peak=all_data.broad[method]['QTL'][marker][3], end=all_data.broad[method]['QTL'][marker][2];
+    all_data.broad.qtl_genotype[marker]['genotype'].forEach((gt, idx) => {
+        if (gt == -1) {
+            n0 += 1;
+            strains.push(all_data.broad.strain[idx]);
+            yticks.push(pos + 0.5);
+            all_data.fine[marker]['haplotype'][idx].forEach(([hstart, hstop, hap, color]) => {
+                if (start < hstop && end > hstart) {
+                    traces.push({
+                        // x: [Math.max(start, hstart)/1e6, Math.min(end, hstop)/1e6, Math.min(end, hstop)/1e6, Math.max(start, hstart)/1e6, Math.max(start, hstart)/1e6, ],
+                        x: [hstart/1e6, hstop/1e6, hstop/1e6, hstart/1e6, hstart/1e6],
+                        y: [pos, pos, pos + 1, pos + 1, pos],
+                        mode: 'lines',
+                        fill: 'toself',
+                        line: {
+                            width: 0,
+                        },
+                        fillcolor: color,
+                        text: chrom + ":" + hstart + '-' + hstop + "<br>strain: " + all_data.broad.strain[idx] + "<br>haplotype: " + hap,
+                        hoverinfo: 'text',
+                        hoveron: 'fills',
+                        showlegend: false
+                    });
+                }
+            });
+            pos += 1
+        }
+    });
+    pos += 2;
+    all_data.broad.qtl_genotype[marker]['genotype'].forEach((gt, idx) => {
+        if (gt == 1) {
+            n1 += 1;
+            strains.push(all_data.broad.strain[idx]);
+            yticks.push(pos + 0.5);
+            all_data.fine[marker]['haplotype'][idx].forEach(([hstart, hstop, hap, color]) => {
+                if (start < hstop && end > hstart) {
+                    traces.push({
+                        // x: [Math.max(start, hstart)/1e6, Math.min(end, hstop)/1e6, Math.min(end, hstop)/1e6, Math.max(start, hstart)/1e6, Math.max(start, hstart)/1e6, ],
+                        x: [hstart/1e6, hstop/1e6, hstop/1e6, hstart/1e6, hstart/1e6],
+                        y: [pos, pos, pos + 1, pos + 1, pos],
+                        mode: 'lines',
+                        fill: 'toself',
+                        line: {
+                            width: 0,
+                        },
+                        fillcolor: color,
+                        text: chrom + ":" + hstart + '-' + hstop + "<br>strain: " + all_data.broad.strain[idx] + "<br>haplotype: " + hap,
+                        hoverinfo: 'text',
+                        hoveron: 'fills',
+                        showlegend: false
+                    });
+                }
+            });
+            pos += 1
+        }
+    });
+    traces.push({
+        x: [start/1e6, end/1e6, end/1e6, start/1e6, start/1e6],
+        y: [0, 0, n0, n0, 0],
+        mode: 'lines',
+        line: {
+            width: 2,
+            color: '#000000'
+        },
+        hoveron: 'none',
+        showlegend: false
+    });
+    traces.push({
+        x: [start/1e6, end/1e6, end/1e6, start/1e6, start/1e6],
+        y: [n0+2, n0+2, pos, pos, n0+2],
+        mode: 'lines',
+        line: {
+            width: 2,
+            color: '#000000'
+        },
+        hoveron: 'none',
+        showlegend: false
+    });
+    traces.push({
+        x: [peak/1e6, peak/1e6],
+        y: [0, n0],
+        mode: 'lines',
+        line: {
+            width: 2,
+            color: '#000000'
+        },
+        hoveron: 'none',
+        showlegend: false
+    });
+    traces.push({
+        x: [peak/1e6, peak/1e6],
+        y: [n0+2, pos],
+        mode: 'lines',
+        line: {
+            width: 2,
+            color: '#000000'
+        },
+        hoveron: 'none',
+        showlegend: false
+    });
+
+    var layout = {
+        xaxis: {
+            title: {
+                text:'Genomic Position (Mb)'
+            },
+            showline: false,
+            tickmode: 'array',
+            ticks: 'outside',
+            showgrid: false,
+            zeroline: false,
+            range: [start/1e6, end/1e6]
+        },
+        yaxis: {
+            title: {
+                text: 'Isotype Strain'
+            },
+            showline: false,
+            showgrid: false,
+            ticks: 'outside',
+            tickvals: yticks,
+            ticktext: strains,
+            tickfont: {
+                size: 6
+            },
+            zeroline: false,
+            range: [0, pos]
+        },
+        annotations: [{
+            showarrow: false,
+            x: end/1e6,
+            y: n0/2,
+            text: "REF (" + n0 + ")",
+            font: {
+                size: 12
+            },
+            xanchor: 'left',
+            textangle: 90
+        },{
+            showarrow: false,
+            x: end/1e6,
+            y: n0 + 2 + n1/2,
+            text: "ALT (" + n1 + ")",
+            font: {
+                size: 12
+            },
+            xanchor: 'left',
+            textangle: 90
+        }],
+        margin: {
+            l: 50,
+            r: 30,
+            t: 40,
+            b: 37
+        },
+        height: pos*8,
+        showlegend: false,
+    };
+    var div_name=method + "_" + marker + "_haplotype_plot";
+    div.append("<div id='" + div_name + "' style='height: " + pos*8 + "px;'></div></div>")
+    var plot = Plotly.newPlot(div_name, traces, layout);
+    return plot
+}
+
+function add_toc_entry(target_id, level, tocList) {
+    const heading = document.querySelector("#" + target_id + " h" + level);
+    heading.id = heading.textContent.toLowerCase().replace(/\s+/g, '-');
+    const li = document.createElement("li");
+    li.innerHTML = `<a href="#${heading.id}">${heading.textContent}</a>`;
+    tocList.appendChild(li);
+}
+
+$(document).ready(function() {
+    $("head title").append("NemaScan Report for " + all_data.params.trait);
+    const now = new Date();
+    $(".meta").append("Generated " + now);
+    var toc_entries=[];
+    toc_entries.push(["Usage", "usage", 1]);
+    var issue_section=$('#issues_box');
+    toc_entries.push(["Strain issues", "strain_issues", 1]);
+    if (Object.hasOwn(all_data, 'issues')) {
+        all_data.issues.forEach((line) => {
+            issue_section.append("<p>" + line + "</p>");
+        })
+    } else {
+        issue_section.append("<p>No strain issues</p>");
+    }
+    
+    var manhattan_section=$('#manhattan_plots');
+    toc_entries.push(["Manhattan plots", "manhattan_plots", 1]);
+    all_data.methods.forEach((method) => {
+        var dom_id = method + "_manhattan_plot";
+        create_broad_manhattan_plot(method, manhattan_section, dom_id);
+    });
+
+    manhattan_section.append("<div id='h2_section'><h2 id='narrow_h2_title'>Narrow-sense heritability</h2><p>The narrow-sense heritability of this trait is " + all_data.stats.narrow_h2.toPrecision(4) + "%.</p><br></div>");
+    toc_entries.push(["Narrow h<sup>2</sup>", "h2_section", 2]);
+    
+    var sig_qtl = [];
+    all_data.methods.forEach((method) => {
+        Object.entries(all_data.broad[method]['QTL']).forEach((marker_info) => {
+            sig_qtl.push([marker_info[1][0], marker_info[0], marker_info[1][4], marker_info[1][1], marker_info[1][3], marker_info[1][2], method]);
+        });
+    });
+    
+    if (sig_qtl.length > 0){
+        var header = ['chrom', 'marker', 'log10p', 'start_pos', 'peak_pos', 'end_pos', 'method'];
+        create_table("Significant QTL", manhattan_section, "broad_qtl_table", header, sig_qtl);
+    }
+    toc_entries.push(["Significant QTL", "broad_qtl_table_div", 2]);
+    
+    all_data.methods.forEach((method) => {
+        toc_entries = toc_entries.concat(add_method_section(method));
+    });
+    toc_entries.push(['Citations', "citations", 1]);
+    console.log(toc_entries);
+
+    tocbot.init({
+        tocSelector: '.js-toc',
+        contentSelector: '.js-toc-content',
+        headingSelector: 'h1, h2, h3',
+        hasInnerContainers: true,
+        collapseDepth: 0,
+        scrollSmooth: false
+    });
+
+});
+</script>

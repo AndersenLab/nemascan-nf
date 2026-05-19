@@ -1,0 +1,245 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://raw.githubusercontent.com/andersenlab/nemascan-nf//nextflow_schema.json",
+    "title": "andersenlab/nemascan-nf pipeline parameters",
+    "description": "A nextflow for performing one or more genome-wide association analyses",
+    "type": "object",
+    "$defs": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": [
+                "traits",
+                "vcf",
+                "outdir"
+            ],
+            "properties": {
+                "traits": {
+                    "type": "string",
+                    "description": "A tsv containing a header, a strain name column, and one or more phenotype columns",
+                    "format": "file-path",
+                    "mimetype": "text/tsv"
+                },
+                "vcf": {
+                    "type": "string",
+                    "description": "A vcf file containing the the strains (or isotype reference strains)  referenced in the traits file",
+                    "format": "file-path"
+                },
+                "isogroups": {
+                    "type": "string",
+                    "description": "A tsv containing a mapping from strains to their isotype reference",
+                    "format": "file-path",
+                    "mimetype": "text/tsv"
+                },
+                "outdir": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open",
+                    "mimetype": "text/tsv"
+                }
+            }
+        },
+        "genotype_matrix_options": {
+            "title": "Genotype matrix options",
+            "type": "object",
+            "description": "Define options for genotype matrix creation",
+            "default": "",
+            "properties": {
+                "maf": {
+                    "type": "number",
+                    "default": 0.05,
+                    "description": "The minor allele frequency cutoff",
+                    "minimum": 1e-09,
+                    "maximum": 1
+                },
+                "skip_pruning": {
+                    "type": "boolean",
+                    "description": "Skip removing outlier values in trait phenotypes"
+                },
+                "summarization_method": {
+                    "type": "string",
+                    "default": "median",
+                    "enum": [
+                        "median",
+                        "mean"
+                    ],
+                    "description": "Method for combining replicate values in traits (median or mean)"
+                }
+            }
+        },
+        "gwa_mapping_options": {
+            "title": "GWA mapping options",
+            "type": "object",
+            "description": "Define how genome-wide mapping is performed",
+            "default": "",
+            "properties": {
+                "mapping": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether to perform GWA mapping"
+                },
+                "gwa_method": {
+                    "type": "string",
+                    "default": "both",
+                    "enum": [
+                        "inbred",
+                        "loco",
+                        "both"
+                    ],
+                    "description": "Method to use for assessing genetic relatedness matrix (inbred, loco, or both)"
+                },
+                "pca": {
+                    "type": "boolean",
+                    "description": "Whether to use principal component analysis to remove systemic biases"
+                },
+                "sparse_cut": {
+                    "type": "number",
+                    "default": 0.05,
+                    "description": "GCTA argument for GRM, --make-bK-sparse"
+                },
+                "alpha": {
+                    "type": "number",
+                    "default": 0.05,
+                    "description": "Significance cutoff value"
+                },
+                "significance_threshold": {
+                    "type": "string",
+                    "default": "BF",
+                    "pattern": "^BF|EIGEN|[0-9]\\.[0-9]+$",
+                    "description": "The method for determining peak significance (BF for Bonferonni, EIGEN for eigen-corrected, or a float for a user-defined value)"
+                },
+                "snp_grouping": {
+                    "type": "integer",
+                    "default": 1000,
+                    "description": "Upper limit on the number of SNVs between QTL to be joined into same interval"
+                },
+                "ci_size": {
+                    "type": "integer",
+                    "default": 150,
+                    "description": "Number of SNVs to extend significant QTL region for fine-mapping"
+                }
+            }
+        },
+        "gwa_fine_mapping_options": {
+            "title": "GWA fine-mapping options",
+            "type": "object",
+            "description": "Define how fine-mapping of significant QTL regions is performed",
+            "default": "",
+            "properties": {
+                "finemapping": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Whether to perform fine-mapping for significant QTL"
+                },
+                "imputed": {
+                    "type": "string",
+                    "format": "file-path",
+                    "description": "VCF file with missing genotypes imputed"
+                },
+                "annotation": {
+                    "type": "string",
+                    "description": "Annotation csv file produced from either ANNOVAR, CSQ, SNPEFF, or VEP",
+                    "format": "file-path"
+                }
+            }
+        },
+        "mediation_options": {
+            "title": "Mediation options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "mediation": {
+                    "type": "boolean",
+                    "description": "Whether to perform mediation analysis"
+                },
+                "transcript_eqtl": {
+                    "type": "string",
+                    "description": "The mediation transcript eQTL file",
+                    "format": "file-path"
+                },
+                "transcript_expression": {
+                    "type": "string",
+                    "description": "The mediation transcript expression file",
+                    "format": "file-path"
+                }
+            }
+        },
+        "report_options": {
+            "title": "Report options",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_report": {
+                    "type": "boolean",
+                    "description": "Do not generate html or pdf report"
+                }
+            },
+            "haplotypes": {
+                "type": "string",
+                "description": "A bed file containing haplotype assignments for each strain",
+                "format": "file-path",
+                "mimetype": "text/tsv"
+            }
+        },
+        "generic_options": {
+            "title": "Generic options",
+            "type": "object",
+            "fa_icon": "fas fa-file-import",
+            "description": "Less common options for the pipeline, typically set in a config file.",
+            "help_text": "These options are common to all nf-core pipelines and allow you to customise some of the core preferences for how the pipeline runs.\n\nTypically these options would be set in a Nextflow config file loaded for all pipeline runs, such as `~/.nextflow/config`.",
+            "properties": {
+                "version": {
+                    "type": "boolean",
+                    "description": "Display version and exit.",
+                    "fa_icon": "fas fa-question-circle",
+                    "hidden": true
+                },
+                "validate_params": {
+                    "type": "boolean",
+                    "description": "Boolean whether to validate parameters against the schema at runtime",
+                    "fa_icon": "fas fa-check-square",
+                    "default": true,
+                    "hidden": true
+                },
+                "monochrome_logs": {
+                    "type": "boolean",
+                    "description": "Render logs without color"
+                },
+                "trace_report_suffix": {
+                    "type": "string",
+                    "fa_icon": "far calendar",
+                    "description": "Suffix to add to the trace report filename. Default is the date and time in the format yyyy-MM-dd_HH-mm-ss.",
+                    "hidden": true
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "#/$defs/input_output_options"
+        },
+        {
+            "$ref": "#/$defs/genotype_matrix_options"
+        },
+        {
+            "$ref": "#/$defs/gwa_mapping_options"
+        },
+        {
+            "$ref": "#/$defs/gwa_fine_mapping_options"
+        },
+        {
+            "$ref": "#/$defs/mediation_options"
+        },
+        {
+            "$ref": "#/$defs/report_options"
+        },
+        {
+            "$ref": "#/$defs/generic_options"
+        }
+    ]
+}
