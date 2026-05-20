@@ -59,9 +59,10 @@ workflow GENOTYPE_MATRIX {
         .map { row -> row.included }
 
     ch_pruned_traits = ch_clean_traits
+        .flatMap { row -> row.traits }
         .map { row -> record(
-            meta: [trait_name:row.traits.baseName],
-            trait: row.traits
+            meta: [trait_name:row.baseName],
+            trait: row
         ) }
 
     // Filter VCF to only phenotyped strains, no missing GTs, SNPs-only

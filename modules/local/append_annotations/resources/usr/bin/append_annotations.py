@@ -24,7 +24,7 @@ def load_gwa(fname):
     data = {}
     fs = open(fname)
     header = fs.readline().upper().rstrip().split("\t")
-    if 'bp' in header:
+    if 'BP' in header:
         pos_index = header.index("BP")
     else:
         pos_index = header.index("POS")

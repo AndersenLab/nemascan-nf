@@ -29,7 +29,7 @@ process GCTA64_PCA {
         fam: file("${fam}"),
         grm_bin: file("${grm_bin}"),
         grm_id: file("${grm_id}"),
-        grm_N: file("${grm_N}", optional: true),
+        grm_N: file("${grm_N}"),
         sparse_sp: file("${sparse_sp}", optional: true),
         sparse_id: file("${sparse_id}", optional: true),
         pca: file("${meta.grm_prefix}.eigenvec")

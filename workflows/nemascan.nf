@@ -69,9 +69,6 @@ workflow NEMASCAN {
     ch_isogroups: Channel<Path>
     ch_eqtl: Channel<EqtlRecord>
     ch_gwa_method: Channel<String>
-    run_mapping: Channel<Boolean>
-    run_finemapping: Channel<Boolean>
-    run_mediation: Channel<Boolean>
 
     main:
     genotype_matrix_call = GENOTYPE_MATRIX (
@@ -86,7 +83,7 @@ workflow NEMASCAN {
     ch_strain_issues    = genotype_matrix_call.strain_issues
     ch_genotype_matrix  = genotype_matrix_call.genotype_matrix
 
-    if (run_mapping) {
+    if (params.mapping) {
         gwa_mapping_call = GWA_MAPPING (
             ch_filtered_traits,
             ch_pruned_vcf,
@@ -96,7 +93,7 @@ workflow NEMASCAN {
         ch_broad_gwa     = gwa_mapping_call.broad_gwa
         ch_chrom_numbers = gwa_mapping_call.chromosome_numbers
 
-        if (run_finemapping) {
+        if (params.mapping && params.finemapping) {
             fine_mapping_call = FINE_MAPPING (
                 ch_strains,
                 ch_imputed_vcf,
@@ -107,21 +104,21 @@ workflow NEMASCAN {
             ch_finemap_gwa = fine_mapping_call.finemap_gwa
             ch_roi_gt      = fine_mapping_call.roi_genotype_matrix
         } else {
-            ch_finemap_gwa = channel.of( [] )
-            ch_roi_gt      = channel.of( [] )
+            ch_finemap_gwa = channel.empty( )
+            ch_roi_gt      = channel.empty( )
         }
 
-        if (run_mediation) {
+        if (params.mapping && params.mediation) {
             ch_med_results = MEDIATION (
                 ch_genotype_matrix,
                 ch_broad_gwa,
                 ch_eqtl
             )
         } else {
-            ch_med_results      = channel.of( [] )
+            ch_med_results      = channel.empty( )
         }
 
-        if (run_mapping && params.skip_report == false) {
+        if (params.mapping && params.skip_report == false) {
             ch_gwa_report = GWA_REPORTING (
                 ch_strain_issues,
                 ch_genotype_matrix,
@@ -132,7 +129,7 @@ workflow NEMASCAN {
                 ch_haplotypes
                 )
         } else {
-            ch_gwa_report = channel.of( [] )
+            ch_gwa_report = channel.empty( )
         }   
     }
 

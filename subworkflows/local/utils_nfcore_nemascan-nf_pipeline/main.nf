@@ -64,12 +64,10 @@ workflow PIPELINE_INITIALISATION {
     //
 
     if (params.mapping) {
-        mapping = true
         finemapping = params.finemapping
         mediation = params.mediation
         matrix_only = false
     } else {
-        mapping = false
         finemapping = false
         mediation = false
         matrix_only = true
@@ -158,9 +156,6 @@ workflow PIPELINE_INITIALISATION {
     isogroups: Channel<Path>        = ch_isogroups
     eqtl: Channel<EqtlRecord>       = ch_eqtl
     gwa_method: Channel<String>     = ch_gwa_method
-    mapping: Boolean                = mapping
-    finemapping: Boolean            = finemapping
-    mediation: Boolean              = mediation
 }
 
 /*

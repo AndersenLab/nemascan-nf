@@ -21,50 +21,48 @@ process GCTA64_MAKE_GRM {
     output:
     record(
         meta: meta + [
-            grm_prefix: "${meta.plink_prefix}_gcta_grm_${meta.method}",
-            sparse_prefix: "${meta.plink_prefix}_sparse_grm_${meta.method}"
+            grm_prefix: "${meta.plink_prefix}_gcta_grm_${meta.true_method}",
+            sparse_prefix: "${meta.plink_prefix}_sparse_grm_${meta.true_method}"
         ],
         bed: file("${bed}"),
         bim: file("${bim}"),
         fam: file("${fam}"),
-        grm_bin: file("${meta.plink_prefix}_gcta_grm_${meta.method}.grm.bin"),
-        grm_id: file("${meta.plink_prefix}_gcta_grm_${meta.method}.grm.id"),
-        grm_N: file("${meta.plink_prefix}_gcta_grm_${meta.method}.grm.N.bin", optional: true),
-        sparse_sp: file("${meta.plink_prefix}_sparse_grm_${meta.method}.grm.sp", optional: true),
-        sparse_id: file("${meta.plink_prefix}_sparse_grm_${meta.method}.grm.id", optional: true),
+        grm_bin: file("${meta.plink_prefix}_gcta_grm_${meta.true_method}.grm.bin"),
+        grm_id: file("${meta.plink_prefix}_gcta_grm_${meta.true_method}.grm.id"),
+        grm_N: file("${meta.plink_prefix}_gcta_grm_${meta.true_method}.grm.N.bin"),
+        sparse_sp: file("${meta.plink_prefix}_sparse_grm_${meta.true_method}.grm.sp", optional: true),
+        sparse_id: file("${meta.plink_prefix}_sparse_grm_${meta.true_method}.grm.id", optional: true),
     )
 
     topic:
     record(tool:"gcta64", version:eval("gcta64 | grep version | cut -f 3 -d' '")) >> 'versions'
 
     script:
-    def command = meta.method == "inbred" ? "--make-grm-inbred" : "--make-grm" 
+    def command = meta.method == "loco" ? "--make-grm" : "--make-grm-inbred" 
     """
     gcta64 --bfile ${meta.plink_prefix} \\
            --autosome \\
            --maf ${maf} \\
            ${command} \\
-           --out ${meta.plink_prefix}_gcta_grm_${meta.method} \\
+           --out ${meta.plink_prefix}_gcta_grm_${meta.true_method} \\
            --thread-num ${task.cpus}
 
     if [[ "${meta.method}" == "inbred" ]]; then
-        gcta64 --grm ${meta.plink_prefix}_gcta_grm_${meta.method} \\
+        gcta64 --grm ${meta.plink_prefix}_gcta_grm_${meta.true_method} \\
                --make-bK-sparse ${sparse_cut} \\
-               --out ${meta.plink_prefix}_sparse_grm_${meta.method} \\
+               --out ${meta.plink_prefix}_sparse_grm_${meta.true_method} \\
                --thread-num ${task.cpus}
     fi
     """
 
     stub:
     """
-    touch ${meta.plink_prefix}_gcta_grm_${meta.method}.grm.bin
-    touch ${meta.plink_prefix}_gcta_grm_${meta.method}.grm.id
+    touch ${meta.plink_prefix}_gcta_grm_${meta.true_method}.grm.bin
+    touch ${meta.plink_prefix}_gcta_grm_${meta.true_method}.grm.id
+    touch ${meta.plink_prefix}_gcta_grm_${meta.true_method}.N.grm.bin
     if [[ ${meta.method} == "inbred" ]]; then
-        touch ${meta.plink_prefix}_sparse_grm_${meta.method}.grm.bin
-        touch ${meta.plink_prefix}_sparse_grm_${meta.method}.grm.id
-    fi
-    if [[ ${meta.method} == "loco" ]]; then
-        touch ${meta.plink_prefix}_gcta_grm_${meta.method}.N.grm.bin
+        touch ${meta.plink_prefix}_sparse_grm_${meta.true_method}.grm.sp
+        touch ${meta.plink_prefix}_sparse_grm_${meta.true_method}.grm.id
     fi
     """
 }

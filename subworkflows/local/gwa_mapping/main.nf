@@ -71,7 +71,7 @@ workflow GWA_MAPPING {
         ch_numbered_vcf
     )
         .combine ( ch_gwa_method )
-        .map { row -> row[0] + record(meta: row[0].meta + [id: row[1], method: row[1]]) }
+        .map { row -> row[0] + record(meta: row[0].meta + [id: row[1], method: row[1], true_method: row[1]]) }
 
     // Create genotype relatedness matrix and sparse GRM
     ch_gcta64_make_grm = GCTA64_MAKE_GRM (
@@ -90,7 +90,7 @@ workflow GWA_MAPPING {
         .map { row -> row + record(pca: null) }
     }
 
-    // Combine with each trait from the split trais channel
+    // Combine with each trait from the split traits channel
     ch_plink_trait = ch_gcta64_grm
         .combine ( ch_filtered_traits )
         .map { row -> row[0] + row[1] + record(meta: row[0].meta + row[1].meta + [id: "${row[1].meta.trait_name}_${row[0].meta.method}"]) }

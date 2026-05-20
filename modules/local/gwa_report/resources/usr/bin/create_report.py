@@ -23,7 +23,7 @@ def main():
     data = parse_config(args.config, args.trait)
     template = open(args.template).read()
     template = template.replace("ALLDATA", render_large_json(data))
-    print_data(data)
+    # print_data(data)
 
     output = open(args.output, 'w')
     output.write(template)
@@ -81,6 +81,7 @@ def render_large_json(data):
             end += 1
     split_text.append(''.join(text[start:end]))
     return "\n".join(split_text)
+
 
 def toJson(data):
     text = []
@@ -159,11 +160,7 @@ def parse_config(fname, trait):
                 if method not in data['methods']:
                     data['methods'].append(method)
                 data['broad'].setdefault(method, {})
-                if method == 'loco':
-                    pos_col = "BP"
-                else:
-                    pos_col = "POS"
-                marker, pval, logpval = load_gwa(gwa_fname, pos_col=pos_col, fine=False)
+                marker, pval, logpval = load_gwa(gwa_fname, fine=False)
                 if 'marker' not in data['broad']: 
                     data['broad']['marker'] = marker
                 data['broad'][method]['pval'] = pval
@@ -182,11 +179,7 @@ def parse_config(fname, trait):
             elif key == 'finemap_gwa':
                 method, chrom, start, end, peak, gwa_fname = line[1:7]
                 name = f"{chrom}:{peak}"
-                if method == 'loco':
-                    pos_col = "POS"
-                else:
-                    pos_col = "POS"
-                marker, pval, logpval, variants, LD = load_gwa(gwa_fname, pos_col=pos_col, fine=True)
+                marker, pval, logpval, variants, LD = load_gwa(gwa_fname, fine=True)
                 data.setdefault('fine', {})
                 data['fine'].setdefault(method, {})
                 data['fine'][method].setdefault(name, {})
@@ -301,11 +294,14 @@ def load_phenotypes(filename):
         for line in f:
             line = line.rstrip().split("\t")
             strains.append(line[0])
-            values.append(float(line[1]))
+            if line[1] == 'NA':
+                values.append(float(np.nan))
+            else:
+                values.append(float(line[1]))
     return strains, values
 
 
-def load_gwa(filename, pos_col='POS', fine=False):
+def load_gwa(filename, fine=False):
     """
     Read GWAS summary statistics from a file
     
@@ -329,7 +325,10 @@ def load_gwa(filename, pos_col='POS', fine=False):
     with open(filename, 'r') as f:
         header = [x.upper() for x in f.readline().rstrip().split("\t")]
         chrom_col = header.index("CHR")
-        pos_col = header.index(pos_col)
+        if "POS" in header:
+            pos_col = header.index("POS")
+        else:
+            pos_col = header.index("BP")
         pval_col = header.index('P')
         if fine:
             ld_col = header.index('LD')

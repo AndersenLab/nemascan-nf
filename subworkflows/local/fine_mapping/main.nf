@@ -97,7 +97,7 @@ workflow FINE_MAPPING {
         ch_vcf_fm_filter,
         params.maf
     )
-        .map { row -> row + record(meta: row.meta + [method: "inbred", true_method: row.meta.method]) }
+        .map { row -> row + record(meta: row.meta + [method: "finemap", true_method: row.meta.method]) }
 
     // Create genotype relatedness matrix and sparse GRM
     ch_gcta64_make_grm = GCTA64_MAKE_GRM (

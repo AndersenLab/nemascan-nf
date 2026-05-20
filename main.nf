@@ -130,10 +130,7 @@ workflow {
         pipeline_initialisation_call.haplotypes,
         pipeline_initialisation_call.isogroups,
         pipeline_initialisation_call.eqtl,
-        pipeline_initialisation_call.gwa_method,
-        pipeline_initialisation_call.mapping,
-        pipeline_initialisation_call.finemapping,
-        pipeline_initialisation_call.mediation
+        pipeline_initialisation_call.gwa_method
     )
 
     //

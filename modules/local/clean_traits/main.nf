@@ -18,7 +18,7 @@ process CLEAN_TRAITS {
 
     output:
     record(
-        traits: file("split_traits/*.tsv"),
+        traits: files("split_traits/*.tsv"),
         included: file("included_strains.txt"),
         issues: file("strain_issues.txt")
     )
