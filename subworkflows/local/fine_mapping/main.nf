@@ -72,7 +72,8 @@ workflow FINE_MAPPING {
                 trait_name:row.trait,
                 marker: row.marker,
                 log10p: row.log10p.toBigDecimal(),
-                method:row.method,
+                method:"finemap",
+                true_method:row.method,
                 chrom:row.CHROM,
                 start:row.startPOS.toInteger(),
                 peak:row.peakPOS.toInteger(),
@@ -97,7 +98,6 @@ workflow FINE_MAPPING {
         ch_vcf_fm_filter,
         params.maf
     )
-        .map { row -> row + record(meta: row.meta + [method: "finemap", true_method: row.meta.method]) }
 
     // Create genotype relatedness matrix and sparse GRM
     ch_gcta64_make_grm = GCTA64_MAKE_GRM (
