@@ -1,7 +1,6 @@
 <h1>
   <picture>
-    <img src="docs/images/logo_light_small.png#gh-light-mode-only">
-    <img src="docs/images/logo_dark_small.png#gh-dark-mode-only">
+    <img src="docs/images/logo_light_small.png">
   </picture>
 </h1>
 
