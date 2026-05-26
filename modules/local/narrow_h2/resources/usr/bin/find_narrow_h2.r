@@ -6,6 +6,7 @@ library(sommer)
 
 # args <- c("Genotype_Matrix.tsv",
 #           "Phenotype_data.tsv",
+#           "trait_name",
 #           "output.txt"
 #          )
 
@@ -16,12 +17,20 @@ genotype_matrix <- readr::read_tsv(args[1])
 
 # load phenotpe data
 phenotype_data <- data.table::fread(args[2]) %>%
-  na.omit() %>%
   as.data.frame()
 names(phenotype_data) <- c("strain", "value")
+
+gt = genotype_matrix[,5:ncol(genotype_matrix)]
+gt[gt == 0] = NA
+gt[gt == -1] = 0
+genotype_matrix[,5:ncol(genotype_matrix)] = gt
+phenotype_data = phenotype_data %>% 
+  na.omit()
 
 A <- sommer::A.mat(t(genotype_matrix %>% dplyr::select(-CHROM, -REF, -ALT, -POS)))
 h2_res <- sommer::mmes(value ~ 1, random = ~sommer::vsm(sommer::ism(strain), Gu = A), data = phenotype_data)
 h2 <- as.numeric(sommer::vpredict(h2_res, h2 ~ (V1) / (V1+V2))[[1]][1])
 
-writeLines(paste(h2), con=args[3])
+writeLines(paste(h2), con=paste(args[4],".tmp",sep=""))
+
+writeLines(paste(args[3], h2, sep="\t"), con=args[4])

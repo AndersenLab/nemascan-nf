@@ -104,13 +104,14 @@ workflow PIPELINE_INITIALISATION {
         ch_imputed_vcf = channel.fromPath ( params.imputed, checkIfExists: true )
             .map { row -> record(vcf: row, vcf_index: file("${row.parent}/${row.name}.csi")) }
     } else {
-        ch_imputed_vcf = channel.empty ( )
+        ch_imputed_vcf = channel.fromPath ( params.vcf, checkIfExists: true )
+            .map { row -> record(vcf: row, vcf_index: file("${row.parent}/${row.name}.csi")) }
     }
 
     if (matrix_only == false && params.annotation != null) {
         ch_annotations = channel.fromPath ( params.annotation, checkIfExists: true )
     } else {
-        ch_annotations = channel.empty ( )
+        ch_annotations = channel.fromPath ( "${projectDir}/assets/NO_FILE", checkIfExists:true )
     }
 
     if (matrix_only == false && params.skip_report == false && params.haplotypes != null) {
@@ -119,12 +120,10 @@ workflow PIPELINE_INITIALISATION {
         ch_haplotypes = channel.empty ( )
     }
     
-    if (params.isogroups == null && params.species in ['c_elegans', 'c_briggsae', 'c_tropicalis']){
-        ch_isogroups = channel.fromPath( "https://caendr.org/request-strains/isotype_list/download" )
-    } else if (params.isogroups != null) {
-        ch_isogroups = channel.fromPath( params.isogroups, checkIfExists: true )
+    if (params.isogroups != null) {
+        ch_isogroups = channel.fromPath ( params.isogroups, checkIfExists: true )
     } else {
-        ch_isogroups = channel.fromPath( "${projectDir}/assets/NO_FILE", checkIfExists:true )
+        ch_isogroups = channel.fromPath ( "${projectDir}/assets/NO_FILE", checkIfExists:true )
     }
 
     if (mediation) {

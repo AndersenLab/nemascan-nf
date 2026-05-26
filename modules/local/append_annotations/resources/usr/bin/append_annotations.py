@@ -2,13 +2,15 @@
 
 import sys
 import gzip
+import os
 
 
 def main():
     gwa_fname, annotation_fname, out_fname = sys.argv[1:4]
 
     gwa = load_gwa(gwa_fname)
-    append_annotations(annotation_fname, gwa)
+    if os.path.getsize(annotation_fname) > 0:
+        append_annotations(annotation_fname, gwa)
     header = "\t".join(gwa['header'])
     del gwa['header']
     markers = list(gwa.keys())

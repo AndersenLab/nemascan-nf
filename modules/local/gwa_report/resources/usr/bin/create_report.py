@@ -187,23 +187,26 @@ def parse_config(fname, trait):
                     data['fine'][name] = {}
                     data['fine'][name]['marker'] = marker
                     data['fine'][name]['LD'] = LD
-                    data['fine'][name]['variants'] = variants
+                    if len(variants) > 0:
+                        data['fine'][name]['variants'] = variants
                 else:
                     if marker[0] < data['fine'][name]['marker'][0]:
                         index = np.searchsorted(np.array(marker), data['fine'][name]['marker'][0])
                         data['fine'][name]['marker'] = marker[:index] + data['fine'][name]['marker']
                         data['fine'][name]['LD'] = LD[:index] + data['fine'][name]['LD']
-                        data['fine'][name]['variants'] = variants[:index] + data['fine'][name]['variants']
+                        if len(variants) > 0:
+                            data['fine'][name]['variants'] = variants[:index] + data['fine'][name]['variants']
                     if marker[-1] > data['fine'][name]['marker'][-1]:
                         index = np.searchsorted(np.array(marker), data['fine'][name]['marker'][-1], side='right')
                         data['fine'][name]['marker'] += marker[index:]
                         data['fine'][name]['LD'] += LD[index:]
-                        data['fine'][name]['variants'] += variants[index:]
+                        if len(variants) > 0:
+                            data['fine'][name]['variants'] += variants[index:]
                 data['fine'][method][name]['logpval'] = logpval
             elif key == 'independent_tests':
                 data['stats'][key] = float(line[1])
             elif key == 'narrow_h2':
-                data['stats'][key] = float(open(line[1]).readline().rstrip())
+                data['stats'][key] = float(open(line[1]).readline().rstrip().split("\t")[-1])
             elif key == 'mediation':
                 method, chrom, start, end, peak, mediation_fname = line[1:7]
                 name = f"{chrom}:{start}-{end}"
@@ -332,11 +335,15 @@ def load_gwa(filename, fine=False):
         pval_col = header.index('P')
         if fine:
             ld_col = header.index('LD')
-            wbgene_col = header.index('WBGENE')
-            gene_col = header.index('GENE_NAME')
-            consequence_col = header.index('CONSEQUENCE')
-            aa_col = header.index('AA')
-        
+            if "WBGENE" in header:
+                annotations = True
+                wbgene_col = header.index('WBGENE')
+                gene_col = header.index('GENE_NAME')
+                consequence_col = header.index('CONSEQUENCE')
+                aa_col = header.index('AA')
+            else:
+                annotations = False
+
         for line in f:
             row = line.rstrip().split("\t")
             pval = float(row[pval_col])
@@ -355,23 +362,25 @@ def load_gwa(filename, fine=False):
             logpvals[chrom].append(log_pval)
             if fine:
                 ld = float(row[ld_col])
-                wbgene = row[wbgene_col]            
-                gene = row[gene_col]            
-                consequence = row[consequence_col]
-                aa = row[aa_col]
-                ref = row[pos_col + 1]
-                alt = row[pos_col + 2]
-                variants.setdefault(chrom, [])
                 LDs.setdefault(chrom, [])
-                variants[chrom].append((wbgene, gene, consequence, aa, ref, alt))
                 LDs[chrom].append(ld)
+                if annotations:
+                    wbgene = row[wbgene_col]            
+                    gene = row[gene_col]            
+                    consequence = row[consequence_col]
+                    aa = row[aa_col]
+                    ref = row[pos_col + 1]
+                    alt = row[pos_col + 2]
+                    variants.setdefault(chrom, [])
+                    variants[chrom].append((wbgene, gene, consequence, aa, ref, alt))
     if fine:
         chrom = list(markers.keys())[0]
         markers = markers[chrom]
         pvals = pvals[chrom]
         logpvals = logpvals[chrom]
-        variants = variants[chrom]
         LDs = LDs[chrom]
+        if annotations:
+            variants = variants[chrom]
         return markers, pvals, logpvals, variants, LDs
     return markers, pvals, logpvals
 

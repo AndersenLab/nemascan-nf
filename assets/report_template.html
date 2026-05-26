@@ -961,22 +961,27 @@ function add_qtl_interval_section(div, method, marker) {
     div.append("<div id='" + marker + "_finemapping'><h3 id='" + method + "_" + marker + "_finemapping_title'>Fine Mapping</h3>");
     toc_entries.push(["Fine mapping", marker + "_finemapping", 3]);
     div.append("<p>Fine mapping was performed by evaluating the genotype-phenotype relationships for all variants nearby the QTL identified from the GWAS mapping using a vcf containing imputed variants. The original mapping only used a subset of marker variants. Only SNVs were considered in this mapping. Other variant types could underlie differences in your trait.</p>");
-    div.append("<p>Each variant is represented by a vertical line, colored by the predicted variant impact as shown in the EFFECT plot key. Genes are represented by horizontal lines with an arrow showing the direction of the gene. The peak marker from the GWAS mapping is shown as a vertical dotted blue line.</p>");
-    add_variant_plot(div, method, marker);
-    div.append("<br><p>This second plot is very similar to the first. Here, each variant is represented by a diamond colored by the linkage to the peak marker (colored in red). This plot can be useful to determine what the strucutre of your region looks like. If you have many variants with high linkage to your peak marker, it is important to remember that any of those variants could be causal.</p>");
-    add_LD_plot(div, method, marker);
-    div.append("</div><br><div id='" + method + "_variant_table'><h3 id='" + method + "_" + marker + "_variants_title'>Intragenic variants in interval</h3>");
-    var data=[], header=['marker', 'ref', 'alt', 'WBGeneID', 'gene name', 'consequence', 'variant -log<sub>10</sub>(<i>p</i>)'];
-    var start=all_data.broad[method]['QTL'][marker][1], end=all_data.broad[method]['QTL'][marker][2], chrom=all_data.broad[method]['QTL'][marker][0];
-    all_data.fine[marker]['variants'].forEach((variant, idx) => {
-        var x=all_data.fine[marker]['marker'][idx];
-        if (x >= start && x <= end && variant[2] != 'N/A' && variant[2] != "Intergenic") {
-            data.push([chrom + ":" + x, variant[4], variant[5], variant[0], variant[1], variant[2], variant[3]]);
-        }
-    });
-    create_table("", div, method + "_" + chrom + "_" + start + "_variant_table", header, data);
-    div.append("</div><br>");
-    toc_entries.push(["Intragenic variants in interval", method + "_" + chrom + "_" + start + "_variant_table_div", 3]);
+    if (Object.hasOwn(all_data.fine[marker], 'variants')) {
+        div.append("<p>Each variant is represented by a vertical line, colored by the predicted variant impact as shown in the EFFECT plot key. Genes are represented by horizontal lines with an arrow showing the direction of the gene. The peak marker from the GWAS mapping is shown as a vertical dotted blue line.</p>");
+        add_variant_plot(div, method, marker);
+        div.append("<br><p>This second plot is very similar to the first. Here, each variant is represented by a diamond colored by the linkage to the peak marker (colored in red). This plot can be useful to determine what the strucutre of your region looks like. If you have many variants with high linkage to your peak marker, it is important to remember that any of those variants could be causal.</p>");
+        add_LD_plot(div, method, marker);
+        div.append("</div><br><div id='" + method + "_variant_table'><h3 id='" + method + "_" + marker + "_variants_title'>Intragenic variants in interval</h3>");
+        var data=[], header=['marker', 'ref', 'alt', 'WBGeneID', 'gene name', 'consequence', 'variant -log<sub>10</sub>(<i>p</i>)'];
+        var start=all_data.broad[method]['QTL'][marker][1], end=all_data.broad[method]['QTL'][marker][2], chrom=all_data.broad[method]['QTL'][marker][0];
+        all_data.fine[marker]['variants'].forEach((variant, idx) => {
+            var x=all_data.fine[marker]['marker'][idx];
+            if (x >= start && x <= end && variant[2] != 'N/A' && variant[2] != "Intergenic") {
+                data.push([chrom + ":" + x, variant[4], variant[5], variant[0], variant[1], variant[2], variant[3]]);
+            }
+        });
+        create_table("", div, method + "_" + chrom + "_" + start + "_variant_table", header, data);
+        div.append("</div><br>");
+        toc_entries.push(["Intragenic variants in interval", method + "_" + chrom + "_" + start + "_variant_table_div", 3]);
+    } else if (Object.hasOwn(all_data.fine[marker], 'LD')) {
+        div.append("<p>In this plot, each variant is represented by a diamond colored by the linkage to the peak marker (colored in red). This plot can be useful to determine what the strucutre of your region looks like. If you have many variants with high linkage to your peak marker, it is important to remember that any of those variants could be causal.</p>");
+        add_LD_plot(div, method, marker);
+    }
 
     if (Object.hasOwn(all_data, 'mediation')) {
         add_mediation(div, method, marker);
@@ -1177,8 +1182,7 @@ function add_variant_plot(div, method, marker) {
 function add_LD_plot(div, method, marker) {
     var X=[], Y=[], Z=[], labels=[], chrom=all_data.broad[method]['QTL'][marker][0], maxY=0, idx1=0;
     var start=all_data.broad[method]['QTL'][marker][1], peak=all_data.broad[method]['QTL'][marker][3], end=all_data.broad[method]['QTL'][marker][2];
-    all_data.fine[marker]['variants'].forEach((variant, idx) => {
-        var x=all_data.fine[marker]['marker'][idx];
+    all_data.fine[marker]['marker'].forEach((x, idx) => {
         if (x >= start && x <= end) {
             var logpval=all_data.fine[method][marker]['logpval'][idx1], ld=all_data.fine[marker]['LD'][idx];
             X.push(x/1e6);

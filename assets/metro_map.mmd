@@ -1,0 +1,115 @@
+$$metro title: andersenlab/nemascan-nf
+%%metro style: dark
+%%metro file: vcf_in | VCF
+%%metro file: traits_in | TSV
+%%metro file: imputed_in | VCF
+%%metro file: annotation_in | CSV
+%%metro file: haplotype_in | BED
+%%metro file: genes_in | BED
+%%metro file: isotype_in | TSV
+%%metro file: mapping_gwa | TSV
+%%metro file: finemapping_gwa | TSV
+%%metro file: genotype_matrix_out | TSV
+%%metro file: strain_issues | TXT
+%%metro file: mediation_report | TSV
+%%metro file: report | HTML
+
+%%metro line: genotype_matrix | Genotype Matrix | #0570b0 
+%%metro line: mapping | Mapping | #2db572
+%%metro line: mediation | Mediation | #f5c542
+%%metro line: main | FineMapping, Mediation | #e66946
+%%metro line: finemapping | FineMapping | #bd0dbd
+
+graph LR
+    subgraph genotype_matrix [Genotype Matrix]
+        get_vcf_strains[Extact strains]
+        clean_traits[Clean traits]
+        vcf_filter[Filter VCF]
+        ld_pruned_markers[Prune markers]
+        make_genotype_matrix[Make genotype matrix]
+
+        vcf_in -->|genotype_matrix,mapping,finemapping,mediation,main| get_vcf_strains
+        traits_in -->|genotype_matrix,mapping,finemapping,mediation,main| clean_traits
+        isotype_in -->|genotype_matrix,mapping,finemapping,mediation,main| clean_traits
+        get_vcf_strains -->|genotype_matrix,mapping,finemapping,mediation,main| clean_traits
+        clean_traits -->|genotype_matrix,mapping,finemapping,mediation,main| vcf_filter
+        vcf_filter -->|genotype_matrix,mapping,finemapping,mediation,main| ld_pruned_markers
+        ld_pruned_markers -->|genotype_matrix,mapping,finemapping,mediation,main| make_genotype_matrix
+    end
+    
+    subgraph gwa_mapping [GWA Mapping]
+        annotate_chroms[Annotate chroms]
+        vcf_to_plink[VCF to plink]
+        gcta_grm[GCTA GRM]
+        gcta_pca[GCTA PCA]
+        gcta_gwa[GCTA GWA]
+        genotype_matrix_eigen[Calculate eigen]
+        aggregate_mappings[Aggregate QTL]
+        narrow_h2[Find heritability]
+
+        annotate_chroms -->|main,mapping,finemapping,mediation| vcf_to_plink
+        vcf_to_plink -->|main,mapping,finemapping,mediation| gcta_grm
+        gcta_grm -->|main,mapping,finemapping,mediation| gcta_pca
+        gcta_pca -->|main,mapping,finemapping,mediation| gcta_gwa
+        gcta_grm -->|main,mapping,finemapping,mediation| gcta_gwa
+        genotype_matrix_eigen -->|main,mapping,finemapping,mediation| aggregate_mappings
+        gcta_gwa -->|main,mapping,finemapping,mediation| narrow_h2
+        narrow_h2 -->|main,mapping,finemapping,mediation| aggregate_mappings
+    end
+
+    subgraph mediation_sub [Mediation]
+        %metro direction: TB
+        %metro entry: top | main, mediation
+        %metro exit: left | mediation, main
+        normalize_trait[Normalize trait]
+        extract_eqtl[Extract eQTL]
+        multimediation[Multi-mediation]
+        single_mediation[Single mediation]
+
+        normalize_trait -->|main,mediation| extract_eqtl
+        extract_eqtl -->|main,mediation| multimediation
+        multimediation -->|main,mediation| single_mediation
+    end
+
+    subgraph gwa_finemapping [QTL fine-mapping]
+        vcf_fm_filter[Filter VCF]
+        vcf_to_fm_plink[VCF to plink]
+        gcta_fm_grm[GCTA GRM]
+        gcta_fm_pca[GCTA PCA]
+        gcta_fm_gwa[GCTA GWA]
+        make_fm_genotype_matrix[Make genotype_matrix]
+        fm_ld[Find LD]
+        append_annotations[Add annotations]
+
+        imputed_in -->|finemapping,main| vcf_fm_filter
+        vcf_fm_filter -->|finemapping,main| vcf_to_fm_plink
+        vcf_fm_filter -->|finemapping,main| make_fm_genotype_matrix
+        vcf_to_fm_plink -->|finemapping,main| gcta_fm_grm
+        gcta_fm_grm -->|finemapping,main| gcta_fm_pca
+        gcta_fm_pca -->|finemapping,main| gcta_fm_gwa
+        gcta_fm_grm -->|finemapping,main| gcta_fm_gwa
+        vcf_fm_filter -->|finemapping,main| fm_ld
+        make_fm_genotype_matrix -->|finemapping,main| append_annotations
+        gcta_fm_gwa -->|finemapping,main| append_annotations
+        fm_ld -->|finemapping,main| append_annotations
+        annotation_in -->|finemapping,main| append_annotations
+    end
+
+    subgraph reporting [Reporting]
+        make_report[Make report]
+
+        make_report -->|main,mapping,finemapping,mediation| report  
+    end  
+
+    %% Inter-section edges
+    make_genotype_matrix -->|main,mapping,finemapping,mediation| annotate_chroms
+    make_genotype_matrix -->|main,mapping,finemapping,mediation| genotype_matrix_eigen
+    make_genotype_matrix -->|main,mapping,finemapping,mediation| narrow_h2
+    aggregate_mappings -->|main,mediation| normalize_trait
+    aggregate_mappings -->|finemapping| vcf_fm_filter
+    aggregate_mappings -->|mapping| make_report
+    single_mediation -->|main| vcf_fm_filter
+    append_annotations -->|finemapping| make_report
+    aggregate_mappings -->|main,mediation| normalize_trait
+    single_mediation -->|mediation| make_report
+

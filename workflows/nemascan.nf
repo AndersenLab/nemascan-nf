@@ -5,12 +5,14 @@ nextflow.enable.types = true
     IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
-include { GENOTYPE_MATRIX           } from '../subworkflows/local/genotype_matrix'
-include { GWA_MAPPING               } from '../subworkflows/local/gwa_mapping'
-include { FINE_MAPPING              } from '../subworkflows/local/fine_mapping'
-include { MEDIATION                 } from '../subworkflows/local/mediation'
-include { GWA_REPORTING             } from '../subworkflows/local/gwa_reporting'
-include { COLLECT_VERSIONS          } from '../modules/local/collect_versions'
+include { GENOTYPE_MATRIX               } from '../subworkflows/local/genotype_matrix'
+include { GWA_MAPPING                   } from '../subworkflows/local/gwa_mapping'
+include { FINE_MAPPING                  } from '../subworkflows/local/fine_mapping'
+include { MEDIATION                     } from '../subworkflows/local/mediation'
+include { GWA_REPORTING                 } from '../subworkflows/local/gwa_reporting'
+include { STRING_TO_FILE as STR2FILE_IT } from '../modules/local/string_to_file'
+include { STRING_TO_FILE as STR2FILE_H2 } from '../modules/local/string_to_file'
+include { COLLECT_VERSIONS              } from '../modules/local/collect_versions'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -92,6 +94,25 @@ workflow NEMASCAN {
         )
         ch_broad_gwa     = gwa_mapping_call.broad_gwa
         ch_chrom_numbers = gwa_mapping_call.chromosome_numbers
+        ch_independent_tests = STR2FILE_IT(
+            ch_broad_gwa
+                .map { row -> row.meta.independent_tests }
+                .collect ( )
+                .map { row -> record(
+                    name:"independent_tests.txt",
+                    value:row[0].toString()
+                ) }
+        )
+        ch_h2 = STR2FILE_H2(
+            ch_broad_gwa
+                .flatMap { row -> row.h2.splitCsv( sep:"\t", header:false ) }
+                .map { row -> "${row[0]}\t${row[1]}" }
+                .collect ( )
+                .map { row -> record(
+                    name:"trait_heritability.tsv",
+                    value:row.join("\n")
+                ) }
+        )
 
         if (params.mapping && params.finemapping) {
             fine_mapping_call = FINE_MAPPING (
@@ -130,7 +151,10 @@ workflow NEMASCAN {
                 )
         } else {
             ch_gwa_report = channel.empty( )
-        }   
+            ch_independent_tests = channel.value( null )
+            ch_h2 = channel.value( null )
+        }
+        
     }
 
     // Compile versions of tools used in the workflow
@@ -146,6 +170,8 @@ workflow NEMASCAN {
 
     emit:
     broad_gwa: Channel<BroadRecord>  = ch_broad_gwa
+    independent_tests: Value<Path> = ch_independent_tests
+    h2: Value<Path> = ch_h2
     fine_gwa: Channel<FineMapRecord> = ch_finemap_gwa
     med_results: Channel<MediationRecord> = ch_med_results
     gwa_report: Channel<ReportRecord> = ch_gwa_report

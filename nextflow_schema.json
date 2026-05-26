@@ -12,8 +12,7 @@
             "description": "Define where the pipeline should find input data and save output data.",
             "required": [
                 "traits",
-                "vcf",
-                "outdir"
+                "vcf"
             ],
             "properties": {
                 "traits": {
@@ -31,13 +30,6 @@
                     "type": "string",
                     "description": "A tsv containing a mapping from strains to their isotype reference",
                     "format": "file-path",
-                    "mimetype": "text/tsv"
-                },
-                "outdir": {
-                    "type": "string",
-                    "format": "file-path",
-                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open",
                     "mimetype": "text/tsv"
                 }
             }

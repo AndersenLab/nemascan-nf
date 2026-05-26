@@ -29,7 +29,7 @@ process NARROW_H2 {
 
     script:
     """
-    find_narrow_h2.r ${genotype_matrix} ${trait} ${meta.trait_name}_narrow_h2.txt
+    find_narrow_h2.r ${genotype_matrix} ${trait} ${meta.trait_name} ${meta.trait_name}_narrow_h2.txt
     """
 
     stub:

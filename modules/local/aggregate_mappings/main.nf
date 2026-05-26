@@ -14,7 +14,7 @@ process AGGREGATE_MAPPINGS {
         gwa: Path,
         chrom_numbering: Path
     )
-    independent_tests: BigDecimal
+    independent_tests: Double
     snp_grouping: Integer
     ci_size: Integer
     significance_threshold: String

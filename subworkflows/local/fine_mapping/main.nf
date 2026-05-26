@@ -71,7 +71,7 @@ workflow FINE_MAPPING {
                 id: "${row.trait}_${row.method}_${row.CHROM}_${row.startPOS}_${row.endPOS}",
                 trait_name:row.trait,
                 marker: row.marker,
-                log10p: row.log10p.toBigDecimal(),
+                log10p: row.log10p.toDouble(),
                 method:"finemap",
                 true_method:row.method,
                 chrom:row.CHROM,

@@ -37,8 +37,12 @@ process APPEND_ANNOTATIONS {
         }' | \\
         sort -k2,2 -k3,3n | \\
         sed 's/ /\\t/g' >> tmp.LD.gwa
-        
-    append_annotations.py tmp.LD.gwa ${annotations} ${meta.id}.annotated.gwa
+    
+    if [[ \$(wc -l ${annotations} | cut -f 1 -d" ") == "0" ]]; then
+        mv tmp.LD.gwa ${meta.id}.annotated.gwa
+    else
+        append_annotations.py tmp.LD.gwa ${annotations} ${meta.id}.annotated.gwa
+    fi
     """
 
     stub:

@@ -7,7 +7,7 @@ params {
 
     // TODO nf-core: Specify your pipeline's command line flags
     // Input options
-    traits: String                 = "${projectDir}/tests/data/debug/ben1_pheno.tsv"
+    traits: String                 = null
     species: String                = null
     vcf: String                    = null
     imputed: String                = null
@@ -34,7 +34,6 @@ params {
     skip_report: Boolean           = false
 
     // Boilerplate options
-    outdir: Path                   = null
     publish_dir_mode: String       = 'copy'
     monochrome_logs: Boolean       = false
     version: Boolean               = false
@@ -149,6 +148,8 @@ workflow {
     // strain_issues = channel.empty()
     // versions      = channel.empty()
     broad_gwa     = nemascan_call.broad_gwa
+    independent_tests = nemascan_call.independent_tests
+    h2            = nemascan_call.h2
     fine_gwa      = nemascan_call.fine_gwa
     med_results   = nemascan_call.med_results
     gwa_report    = nemascan_call.gwa_report
@@ -159,10 +160,19 @@ workflow {
 output {
     broad_gwa: Channel<BroadRecord> {
         path { sample ->
-            sample.gwa >> "${workflow.outputDir}/${sample.meta.trait_name}/gwa/${sample.meta.method}/"
-            sample.qtl >> "${workflow.outputDir}/${sample.meta.trait_name}/gwa/${sample.meta.method}/"
-            sample.h2  >> "${workflow.outputDir}/${sample.meta.trait_name}/gwa/${sample.meta.method}/"
+            sample.gwa >> "${workflow.outputDir}/${sample.meta.trait_name}/gwa/${sample.meta.method}/${sample.meta.trait_name}_${sample.meta.method}.gwa"
+            sample.qtl >> "${workflow.outputDir}/${sample.meta.trait_name}/gwa/${sample.meta.method}/${sample.meta.trait_name}_${sample.meta.method}_qtl.tsv"
         }
+        mode params.publish_dir_mode
+        overwrite true
+    }
+    independent_tests: Value<Path> {
+        path '.'
+        mode params.publish_dir_mode
+        overwrite true
+    }
+    h2: Value<Path> {
+        path '.'
         mode params.publish_dir_mode
         overwrite true
     }
@@ -195,9 +205,10 @@ output {
         mode params.publish_dir_mode
         overwrite true
     }
-    versions {
+    versions: Value<Path> {
         path '.'
         mode params.publish_dir_mode
+        overwrite true
     }
 }
 

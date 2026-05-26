@@ -119,7 +119,7 @@ workflow GWA_MAPPING {
     ch_independent_tests = ch_genotype_matrix_eigen
         .flatMap { row -> row.splitCsv( sep:"\t", header:true ) }
         .map { row -> new EigenRecord(row) }
-        .map { row -> row.eigen.toBigDecimal() }
+        .map { row -> row.eigen.toDouble() }
         .reduce { a, b -> a + b }
 
     // Pull out significant QTL regions
