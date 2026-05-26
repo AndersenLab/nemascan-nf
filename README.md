@@ -1,7 +1,7 @@
 <h1>
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/logo_light_small.png">
-    <img alt="andersenlab/nemascan-nf" src="docs/images/logo_light_small.png">
+    <img src="docs/images/logo_light_small.png#gh-light-mode-only">
+    <img src="docs/images/logo_dark_small.png#gh-dark-mode-only">
   </picture>
 </h1>
 
