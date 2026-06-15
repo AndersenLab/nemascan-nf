@@ -173,7 +173,7 @@ Now, you can run the pipeline using:
 ```bash
 nextflow run andersenlab/nemascan-nf \
     --vcf <VCF> \
-    --trait <TRAIT TSV> \
+    --traits <TRAIT TSV> \
     --species <SPECIES NAME> \
     -profile <docker/singularity/.../institute> \
     -output-dir <OUTDIR>
