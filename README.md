@@ -6,35 +6,36 @@
 
 ## Introduction
 
-**andersenlab/nemascan-nf** is a bioinformatics pipeline that can be used to perform genome-wise association mapping in *Caenorhabditis* species. It takes a at minimum a VCF file with SNV data for multiple worm stains and a tsv file with phenotype data for one or more traits as input, creates a genotype matrix and can perform genome-wide mapping, fine-mapping on significant QTL, mediation with transcript eQTL, and produces an interactive report per trait.
+**andersenlab/nemascan-nf** is a bioinformatics pipeline that can be used to perform genome-wise association mapping in *Caenorhabditis* species. It takes at minimum a VCF file with SNV data for multiple worm stains and a tsv file with phenotype data for one or more traits as input, creates a genotype matrix and can perform genome-wide mapping, fine-mapping on significant QTL, mediation with transcript eQTL, and produces an interactive report per trait.
 
 ![andersenlab/nemascan-nf metro map](docs/images/nemascan_metro_map.svg)
 
-1. Pull strains present in VCF file (`zcat`, `awk`)
-2. Adjust and filter trait strains and collapse replicates (`awk`)
-3. Filter VCF by strain list and non-missing SNVs ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html))
-4. Prune markers by LD for a subset for whole genome mapping ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-5. Create a text-based genotype matrix ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html), `sed`)
-6. Create a name to numner mapping of chromosomes (`zcat`, `awk`)
-7. Convert filtered VCF file to plink format ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-8. Create a genetic relatedness matrix (GRM) ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-9. Find PCA-based covariates (optional) ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-10. Perform genome-wide association mapping ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-11. Fine narrow-sense heritability ([`R`](https://www.r-project.org/), [`R-sommer`](https://cran.r-project.org/web/packages/sommer/index.html))
-12. Find eigen-based effective number of tests for p-value correction ([`python`](https://www.python.org/))
-13. Normalize trait phenotype values (`awk`)
-14. Extract eQTL falling in the significant QTL intervals (`awk`)
-15. Calculate multi-mediation values and significant genes ([`R`](https://www.r-project.org/), [`R-Multimed`](https://www.rdocumentation.org/packages/mediation/versions/4.5.1))
-16. Calculate mediation values for each significant gene ([`R`](https://www.r-project.org/), [`R-Multimed`](https://www.rdocumentation.org/packages/mediation/versions/4.5.1))
-17. Filter imputed VCF by strain list, significant QTL interval, and non-missing SNVs ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html))
-18. Convert filtered VCF file to plink format ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-19. Create a complete genetic relatedness matrix (GRM) ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-20. Find PCA-based covariates (optional) ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-21. Perform genome-wide association mapping ([`plink`](https://www.cog-genomics.org/plink/1.9/))
-22. Create a text-based QTL interval genotype matrix ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html), `sed`)
-23. Find linkage disequilibrium between significant QTL peak and surrounding markers ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html))
-24. Append variant impact data (optional) and LD values to each marker in fine-mapping output ([`python`](https://www.python.org/))
-25. Create HTML-based report ([`python`](https://www.python.org/), `javascript`, [`DataTables`](https://datatables.net/), [`plotly`](https://plotly.com/javascript/))
+1. (Extract strains) Pull strains present in VCF file (`zcat`, `awk`)
+2. (Clean traits) Adjust strain names, filter trait outliers, and collapse strain replicates (`awk`)
+3. (Filter VCF) Filter VCF by strain list and non-missing SNVs ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html))
+4. (Prune markers) Prune markers by LD for a subset for whole genome mapping ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+5. (Make genotype matrix) Create a text-based genotype matrix ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html), `sed`)
+6. (Annotate chroms) Create a name to number mapping of chromosomes (`zcat`, `awk`)
+7. (VCF to plink) Convert filtered VCF file to plink format ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+8. (GCTA GRM) Create a genetic relatedness matrix (GRM) ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+9. (GCTA PCA) Find PCA-based covariates (optional) ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+10. (GCTA GWA) Perform genome-wide association mapping ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+11. (Find heritability) Find narrow-sense heritability ([`R`](https://www.r-project.org/), [`R-sommer`](https://cran.r-project.org/web/packages/sommer/index.html))
+12. (Aggregate QTL) Collapse nearby QTL and extend marker window for fine-mapping ([`python`](https://www.python.org/))
+13. (Calculate eigen) Find eigen-based effective number of tests for p-value correction ([`python`](https://www.python.org/))
+14. (Normalize trait) Normalize trait phenotype values (`awk`)
+15. (Extract eQTL) Extract eQTL falling in the significant QTL intervals (`awk`)
+16. (Multi-mediation) Calculate multi-mediation values and significant genes ([`R`](https://www.r-project.org/), [`R-Multimed`](https://www.rdocumentation.org/packages/mediation/versions/4.5.1))
+17. (Single mediation) Calculate mediation values for each significant gene ([`R`](https://www.r-project.org/), [`R-Multimed`](https://www.rdocumentation.org/packages/mediation/versions/4.5.1))
+18. (Filter VCF) Filter imputed VCF by strain list, significant QTL interval, and non-missing SNVs ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html))
+19. (VCF to plink) Convert filtered imputed VCF file to plink format ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+20. (GCTA GRM) Create a complete genetic relatedness matrix for QTL VCF (GRM) ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+21. (GCTA PCA) Find PCA-based covariates for QTL (optional) ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+22. (GCTA GWA) Perform QTL association fine-mapping ([`plink`](https://www.cog-genomics.org/plink/1.9/))
+23. (Make genotype matrix) Create a text-based QTL interval genotype matrix ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html), `sed`)
+24. (Find LD) Find linkage disequilibrium between significant QTL peak and surrounding markers ([`bcftools`](https://samtools.github.io/bcftools/bcftools.html))
+25. (Add annotations) Append variant impact data (optional) and LD values to each marker in fine-mapping output ([`python`](https://www.python.org/))
+26. (Make report) Create HTML-based report ([`python`](https://www.python.org/), `javascript`, [`DataTables`](https://datatables.net/), [`plotly`](https://plotly.com/javascript/))
 
 ## Usage
 
@@ -53,7 +54,7 @@ You will need several input files with some specific to the modules you choose t
 
 **VCF file** (--vcf):
 
-You will need a VCF file containing genotypes for all samples. Included samples should be genetically distinct (i.e. one sample per isotype group). The VCF file should be in plain-text or gzipped format, not a BCF.
+You will need a VCF file containing genotypes for all strains. Included strains should be genetically distinct (i.e. one strain per isotype group). The VCF file should be in plain-text or gzipped format, not a BCF. For most up-to-date genotypes and strain lists, refer to [CaeNDR](https://caendr.org/data-release).
 
 **Trait file** (--traits):
 
@@ -64,18 +65,18 @@ You will need a tab-separated file with following format:
 | AB1    | 0.123  | 1.532  |
 | N2     | 1.765  | 2.657  |
 
-The file must have a header starting with "strain" and every subsequent column heading corresponding to a trait name.Each row represents single sample. The first column contains the strain name while the remaining columns contain phenotype values for each trait.
+The file must have a header starting with "strain" and every subsequent column heading corresponding to a trait name. Each row represents single sample. The first column contains the strain name while the remaining columns contain phenotype values for each trait. Isotypes should only have a single representative strain but can have multiple replicates for a given strain which are combined using the *--summarization-method* option.
 
 **Isotypes file** (--isogroups, optional):
 
 This file is a tab-separated file with strain names, their isotype reference strain, and alternative strain names. If the species being mapped is *C. elegans*, *C. briggsae*, or *C. tropicalis* and the species is specified, this data will automatically be downloaded from [CaeNDR](https://caendr.org/request-strains/isotype_list) if no isotype file is passed. Otherwise, no adjustments or filtering or strains will occur based on isotype data.
 
-This file needs to be in the following format:
+If this file is provided by the user (not recommended), it needs to be in the following format:
 
 | strain | isotype | previous_names |
 | ------ | ------- | -------------- |
-| AB1    | AB1     |                |
-| ECA153 | N2      | N2_(CGC)\|N2   |
+| AB1    | AB1     | AB1_CGC        |
+| ECA153 | N2      | N2_CGC\|N2_X   |
 
 Multiple alternative names can be specified using a "|" as a separator. Alternative names do not need to specified for each strain.
 
@@ -85,15 +86,15 @@ For fine-mapping, you will want a VCF file with missing genotypes imputed to max
 
 **Annotation file** (--annotation, optional, fine-mapping only):
 
-To assess the functional impacts of each variant, you can pass a tab-separated file detailing the impact of each variant. The format of this file is expected to match one produced for CaeNDR using the tool CSQ, VEP, Annovar, or SnpEff. You can read more about them [here](https://caendr.org/faq#tool-differences). If you want to using this, we suggest downloading the annotations from [CaeNDR](https://caendr.org/data/data-release). 
+To assess the functional impacts of each variant, you can pass a tab-separated file detailing the impact of each variant. The format of this file is expected to match one produced for CaeNDR using the tool CSQ, VEP, Annovar, or SnpEff. You can read more about them [here](https://caendr.org/faq#tool-differences). If you want to use this, we suggest downloading the annotations from [CaeNDR](https://caendr.org/data/data-release). 
 
 **Haplotype file** (--haplotypes, optional, fine-mapping only):
 
-To view whether variant differences are driven by broader genetic stratification, you can pass a bed file containing strain haplotypes for plotting in the final trait reports. This file should be a bed file containing the chromosome, start position, end position, strain name, haplotype name, two columns that are not used by this pipeline, and a haplotype color. Each line represents one haplotype block in a single strain. If the species being mapped is *C. elegans*, *C. briggsae*, or *C. tropicalis* and the species is specified, this data will automatically be downloaded from [CaeNDR](https://caendr.org/data/data-release) if no haplotype file is passed.
+To view whether variant differences are driven by broader genetic stratification, you can pass a bed file containing strain haplotypes for plotting in the final trait reports. If the species being mapped is *C. elegans*, *C. briggsae*, or *C. tropicalis* and the species is specified, this data will automatically be downloaded from [CaeNDR](https://caendr.org/data/data-release) if no haplotype file is passed. If you wish to pass a custom filem it should be a bed file containing the chromosome, start position, end position, strain name, haplotype name, two columns that are ignored by this pipeline, and a haplotype color. Each line represents one haplotype block in a single strain. 
 
 **Gene file** (--genes, optional, fine-mapping only):
 
-This is a bed12 file with transcript modesl used to plot genes on the variant annotation plot. If the species being mapped is *C. elegans*, *C. briggsae*, or *C. tropicalis* and the species is specified, this data will automatically be downloaded from [CaeNDR](https://caendr.org/data/data-release) if no haplotype file is passed.
+This is a bed12 file with transcript models used to plot genes on the variant annotation plot. If the species being mapped is *C. elegans*, *C. briggsae*, or *C. tropicalis* and the species is specified, this data will automatically be downloaded from [CaeNDR](https://caendr.org/data/data-release) if no haplotype file is passed.
 
 ### Parameters
 
@@ -127,7 +128,7 @@ A true/false value for whether to generate an html report for each trait tested.
 
 **--pca** (default: false)
 
-A true/false value for whether whether to use the first principal component as a covariate for association mapping. This can help with batch correction and systematic bias. 
+A true/false value for whether whether to use the first principal component as a covariate for association mapping. This can help with confounding effects if there is significant population structure that create the appearance of significant associations driven by relatedness rather than specific genetic differences. 
 
 **--skip_pruning** (default: false)
 
@@ -159,7 +160,7 @@ The number of SNVs to extend the significant QTL interval by in each direction.
 
 **--sparse_cut** (default: 0.05)
 
-The relatedness cutoff value for generating a sparse genetic related map. This is only used if using the inbred method for handling genetic structure.
+The relatedness cutoff value for generating a sparse genetic relatedness map. This is only used if using the inbred method for handling genetic structure.
 
 **--highlight_strains** (default: null)
 
