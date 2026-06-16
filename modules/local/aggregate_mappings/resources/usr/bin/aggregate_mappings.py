@@ -85,7 +85,7 @@ def main():
             chrint = numpy.searchsorted(chroms, sigSnps['CHR'][start])
             s, e = chr_indices[chrint:chrint + 2]
             upstream_index = max(s, sig_indices[start] - CI_size)
-            downstream_index = min(e, sig_indices[stop - 1] + CI_size)
+            downstream_index = min(e - 1, sig_indices[stop - 1] + CI_size)
             best_pval = numpy.argmax(sigSnps['log10p'][start:stop]) + start
             intervals.append((sigSnps['CHR'][start], sigSnps['marker'][best_pval], sigSnps['log10p'][best_pval],
                               map_data['POS'][upstream_index], sigSnps['POS'][best_pval],
