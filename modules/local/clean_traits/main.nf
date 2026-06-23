@@ -2,7 +2,6 @@ nextflow.enable.types = true
 
 process CLEAN_TRAITS {
     label "local"
-    maxRetries 0
 
     conda null
     container null

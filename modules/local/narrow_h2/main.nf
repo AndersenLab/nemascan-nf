@@ -2,7 +2,7 @@ nextflow.enable.types = true
 
 process NARROW_H2 {
     tag "${meta.trait_name}"
-    maxRetries 0
+    label 'process_small'
 
     conda "${moduleDir}/environment.yml"
     container "docker://andersenlab/r-sommer:20260121"

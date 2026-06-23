@@ -2,7 +2,6 @@ nextflow.enable.types = true
 
 process CHROMOSOME_NUMBERING {
     label "local"
-    maxRetries 0
 
     conda null
     container null

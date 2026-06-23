@@ -1,8 +1,7 @@
 nextflow.enable.types = true
 
 process GENOTYPE_MATRIX_EIGEN {
-    maxRetries 0
-    label 'process_medium'
+    label 'process_bigmem_progressive'
     tag "${chromosome}"
 
     conda "${moduleDir}/environment.yml"

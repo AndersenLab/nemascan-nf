@@ -2,7 +2,7 @@ nextflow.enable.types = true
 
 process AGGREGATE_MAPPINGS {
     tag "${meta.id}"
-    maxRetries 0
+    label "process_small"
 
     conda "${moduleDir}/environment.yml"
     container "docker://andersenlab/numpy:2025071813435349b371"

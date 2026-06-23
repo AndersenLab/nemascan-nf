@@ -2,7 +2,7 @@ nextflow.enable.types = true
 
 process APPEND_ANNOTATIONS {
     tag "${meta.id}"
-    label 'process_small'
+    label 'process_small_progressive'
 
     conda "${moduleDir}/environment.yml"
     container "docker://andersenlab/numpy:2025071813435349b371"

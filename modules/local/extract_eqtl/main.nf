@@ -4,7 +4,6 @@ process EXTRACT_EQTL {
     tag "${meta.id}"
 
     label "local"
-    maxRetries 0
 
     conda null
     container null

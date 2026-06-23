@@ -4,7 +4,6 @@ process STRING_TO_FILE {
     tag "${name}"
 
     label "local"
-    maxRetries 0
 
     conda null
     container null

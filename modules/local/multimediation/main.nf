@@ -3,7 +3,7 @@ nextflow.enable.types = true
 process MULTIMEDIATION {
     tag "${meta.id}"
     label "multimediation"
-    maxRetries 0
+    label 'process_small'
 
     conda "${moduleDir}/environment.yml"
     container "docker://andersenlab/mediation:20220407173046db3227"

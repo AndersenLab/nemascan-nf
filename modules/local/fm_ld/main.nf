@@ -2,7 +2,7 @@ nextflow.enable.types = true
 
 process FM_LD {
     tag "${meta.id}"
-    label 'process_medium'
+    label 'process_medium_progressive'
 
     conda "${moduleDir}/environment.yml"
     container "docker://quay.io/biocontainers/plink:1.90b6.21--h779adbc_1"

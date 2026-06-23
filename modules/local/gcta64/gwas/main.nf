@@ -2,8 +2,7 @@ nextflow.enable.types = true
 
 process GCTA64_GWAS {
     tag "${meta.id}"
-    maxRetries 0
-    label 'process_single'
+    label 'process_small_progressive'
 
     conda "${moduleDir}/environment.yml"
     container "docker://quay.io/biocontainers/gcta:1.94.1--h9ee0642_0"

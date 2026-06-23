@@ -2,7 +2,6 @@ nextflow.enable.types = true
 
 process GET_VCF_STRAINS {
     label "local"
-    maxRetries 0
 
     conda null
     container null

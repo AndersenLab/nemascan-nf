@@ -9,7 +9,7 @@ record ConfigRecord {
 
 process GWA_REPORT {
     label "gwa_report"
-    maxRetries 0
+    label 'process_single_progressive'
 
     conda "${moduleDir}/environment.yml"
     container "docker://andersenlab/plotly:20260417"

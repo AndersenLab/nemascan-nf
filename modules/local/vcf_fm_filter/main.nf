@@ -2,7 +2,7 @@ nextflow.enable.types = true
 
 process VCF_FM_FILTER {
     tag "${meta.id}"
-    label 'process_medium'
+    label 'process_medium_small'
 
     conda "${moduleDir}/environment.yml"
     container "community.wave.seqera.io/library/bcftools_htslib:0a3fa2654b52006f"

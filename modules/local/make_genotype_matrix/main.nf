@@ -1,7 +1,7 @@
 nextflow.enable.types = true
 
 process MAKE_GENOTYPE_MATRIX {
-    label 'process_medium'
+    label 'process_medium_small_progressive'
 
     conda "${moduleDir}/environment.yml"
     container "community.wave.seqera.io/library/bcftools_htslib:0a3fa2654b52006f"

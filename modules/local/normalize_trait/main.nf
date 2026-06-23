@@ -4,7 +4,6 @@ process NORMALIZE_TRAIT {
     tag "${meta.id}"
 
     label "local"
-    maxRetries 0
 
     conda null
     container null

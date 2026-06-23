@@ -141,12 +141,6 @@ workflow {
     )
 
     publish:
-    // broad_gwa     = channel.empty()
-    // fine_gwa      = channel.empty()
-    // med_results   = channel.empty()
-    // gwa_report    = channel.empty()
-    // strain_issues = channel.empty()
-    // versions      = channel.empty()
     broad_gwa     = nemascan_call.broad_gwa
     independent_tests = nemascan_call.independent_tests
     h2            = nemascan_call.h2

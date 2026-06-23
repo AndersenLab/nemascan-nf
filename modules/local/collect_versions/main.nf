@@ -1,6 +1,8 @@
 nextflow.enable.types = true
 
 process COLLECT_VERSIONS {
+    label 'local'
+
     input:
     version_lines: Bag<String>
 
