@@ -105,7 +105,10 @@ def toJson(data):
     elif type(data) == int:
         text.append(f"{data}")
     elif type(data) == float:
-        text.append(f"{data:0.3e}")
+        if np.isnan(data):
+            text.append("NaN")
+        else:
+            text.append(f"{data:0.3e}")
     elif type(data) == str:
         text.append('"' + data + '"')
     return text
