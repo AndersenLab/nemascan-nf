@@ -34,7 +34,6 @@ workflow GENOTYPE_MATRIX {
     ch_isogroups: Channel<Path>
 
     main:
-    
     ch_get_vcf_strains = GET_VCF_STRAINS ( ch_vcf )
 
     // Filter traits and split into invidual trait files

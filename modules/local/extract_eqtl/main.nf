@@ -5,9 +5,6 @@ process EXTRACT_EQTL {
 
     label "local"
 
-    conda null
-    container null
-
     input:
     record (
         meta: Map,

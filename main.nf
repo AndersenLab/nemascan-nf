@@ -10,7 +10,9 @@ params {
     traits: String                 = null
     species: String                = null
     vcf: String                    = null
+    vcf_index: String              = null
     imputed: String                = null
+    imputed_index: String          = null
     annotation: String             = null
     haplotypes: String             = null
     isogroups: String              = null
@@ -80,7 +82,6 @@ record BroadRecord {
     trait: Path
     gwa: Path
     qtl: Path
-    matrix: Path
     h2: Path
     independent_tests: Float
 }
@@ -106,6 +107,40 @@ record ReportRecord {
 workflow {
 
     main:
+    log.info ""
+    log.info "Trait File                              = ${params.traits}"
+    log.info "VCF                                     = ${params.vcf}"
+    log.info "Species                                 = ${params.species}"
+    log.info "Isogroups                               = ${params.isogroups}"
+    log.info "Mapping run                             = ${params.mapping}"
+    log.info "Output directory                        = ${workflow.outputDir}"
+    if (params.mapping){
+        log.info "MAF                                     = ${params.maf}"
+        log.info "PCA covariate                           = ${params.pca}"
+        log.info "SNP grouping                            = ${params.snp_grouping}"
+        log.info "CI size                                 = ${params.ci_size}"
+        log.info "Significance threshold                  = ${params.significance_threshold}"
+        log.info "Sparse cut                              = ${params.sparse_cut}"
+        log.info "Alpha                                   = ${params.alpha}"
+        log.info "Skip pruning                            = ${params.skip_pruning}"
+        log.info "Summarization method                    = ${params.summarization_method}"
+        log.info "GWA method                              = ${params.gwa_method}"
+        log.info "Perform fine-mapping                    = ${params.finemapping}"
+        log.info "Mediation run                           = ${params.mediation}"
+        log.info "Skip report                             = ${params.skip_report}"
+    }
+    if (params.finemapping){
+        log.info "Imputed                                 = ${params.imputed}"
+    }
+    if (params.mediation){
+        log.info "Transcript eQTL                         = ${params.transcript_eqtl}"
+        log.info "Transcript expression                   = ${params.transcript_expression}"
+    }
+    if (!params.skip_report){
+        log.info "Genes                                   = ${params.genes}"
+        log.info "Haplotypes                              = ${params.haplotypes}"
+        log.info "Annotations                             = ${params.annotation}"
+    }
     if (!nextflow.version.matches('>=26.04.0')) {
         error("This pipeline requires Nextflow version 26.0 or higher, but you are running version ${nextflow.version}")
     }
@@ -141,6 +176,7 @@ workflow {
     )
 
     publish:
+    gt_matrix     = nemascan_call.gt_matrix
     broad_gwa     = nemascan_call.broad_gwa
     independent_tests = nemascan_call.independent_tests
     h2            = nemascan_call.h2
@@ -152,6 +188,13 @@ workflow {
 }
 
 output {
+    gt_matrix: Channel<Path> {
+        path { sample ->
+            sample >> "${workflow.outputDir}/genotype_matrix.tsv"
+        }
+        mode params.publish_dir_mode
+        overwrite true
+    }
     broad_gwa: Channel<BroadRecord> {
         path { sample ->
             sample.gwa >> "${workflow.outputDir}/${sample.meta.trait_name}/gwa/${sample.meta.method}/${sample.meta.trait_name}_${sample.meta.method}.gwa"

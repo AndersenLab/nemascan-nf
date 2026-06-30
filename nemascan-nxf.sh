@@ -4,9 +4,9 @@
 #
 ###################################################################################################################
 
-DEFAULT_GOOGLE_PROJECT="andersen-lab"
+DEFAULT_GOOGLE_PROJECT="caendr"
 DEFAULT_QUEUE_REGION="us-east1"
-DEFAULT_GOOGLE_SERVICE_ACCOUNT_EMAIL="nscalc-201573431837@andersen-lab.iam.gserviceaccount.com"
+DEFAULT_GOOGLE_SERVICE_ACCOUNT_EMAIL="caendr-pipeline-user@caendr.iam.gserviceaccount.com"
 DEFAULT_SPECIES="c_elegans"
 DEFAULT_VCF_VERSION="20250625"
 DEFAULT_AWS_BUCKET="https://caendr-open-access-data-bucket.s3.us-east-2.amazonaws.com"
@@ -35,12 +35,12 @@ if [[ -z "${SPECIES}" ]]; then
 fi
 
 if [[ -z "${VCF_VERSION}" ]]; then
-  SPECIES=${DEFAULT_VCF_VERSION}
+  VCF_VERSION=${DEFAULT_VCF_VERSION}
   echo "VCF_VERSION environment variable is not set - defaulting to ${VCF_VERSION}"
 fi
 
 if [[ -z "${AWS_BUCKET}" ]]; then
-  SPECIES=${DEFAULT_AWS_BUCKET}
+  AWS_BUCKET=${DEFAULT_AWS_BUCKET}
   echo "AWS_BUCKET environment variable is not set - defaulting to ${AWS_BUCKET}"
 fi
 
@@ -62,14 +62,12 @@ if [[ -z "${WORK_DIR}" ]]; then
   exit 1
 fi
 
-
-
 nextflow run main.nf \
   -profile gcp \
   --google_project "${GOOGLE_PROJECT}" \
   --google_zone "${QUEUE_REGION}" \
   --google_service_account_email "${GOOGLE_SERVICE_ACCOUNT_EMAIL}" \
-  --traitfile "${TRAIT_FILE}" \
+  --traits "${TRAIT_FILE}" \
   --species "${SPECIES}" \
   --vcf "${AWS_BUCKET}/dataset_release/${SPECIES}/${VCF_VERSION}/variation/WI.${VCF_VERSION}.small.hard-filter.isotype.vcf.gz" \
   --imputed "${AWS_BUCKET}/dataset_release/${SPECIES}/${VCF_VERSION}/variation/WI.${VCF_VERSION}.impute.isotype.vcf.gz" \
@@ -80,3 +78,4 @@ nextflow run main.nf \
   --work_dir "${WORK_DIR}" \
   -output-dir "${OUTPUT_DIR}"
   
+  gcloud storage cp .nextflow.log ${OUTPUT_DIR}/

@@ -5,7 +5,7 @@ process NARROW_H2 {
     label 'process_small'
 
     conda "${moduleDir}/environment.yml"
-    container "docker://andersenlab/r-sommer:20260121"
+    container "andersenlab/r-sommer:20260121"
 
     input:
 

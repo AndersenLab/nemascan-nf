@@ -3,9 +3,6 @@ nextflow.enable.types = true
 process CHROMOSOME_NUMBERING {
     label "local"
 
-    conda null
-    container null
-
     input:
     record(
         vcf: Path,

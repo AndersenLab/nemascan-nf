@@ -3,9 +3,6 @@ nextflow.enable.types = true
 process CLEAN_TRAITS {
     label "local"
 
-    conda null
-    container null
-
     input:
     record(
         traits: Path,

@@ -5,9 +5,6 @@ process NORMALIZE_TRAIT {
 
     label "local"
 
-    conda null
-    container null
-
     input:
     record (
         meta: Map,

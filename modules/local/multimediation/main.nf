@@ -6,7 +6,7 @@ process MULTIMEDIATION {
     label 'process_small'
 
     conda "${moduleDir}/environment.yml"
-    container "docker://andersenlab/mediation:20220407173046db3227"
+    container "andersenlab/mediation:20220407173046db3227"
 
     input:
     record (

@@ -33,7 +33,6 @@ record BroadRecord {
     trait: Path
     gwa: Path
     qtl: Path
-    matrix: Path
     h2: Path
     independent_tests: Float
 }
@@ -154,7 +153,22 @@ workflow NEMASCAN {
             ch_independent_tests = channel.value( null )
             ch_h2 = channel.value( null )
         }
-        
+        ch_broad_gwa_nomat = ch_broad_gwa
+            .map { row -> record(
+                meta: row.meta,
+                trait: row.trait,
+                gwa: row.gwa,
+                qtl: row.qtl,
+                h2: row.h2,
+                independent_tests: row.independent_tests
+            )}
+    } else {
+        ch_broad_gwa_nomat = channel.empty( )
+        ch_independent_tests = channel.value( null )
+        ch_h2 = channel.value( null )
+        ch_finemap_gwa = channel.empty( )
+        ch_med_results = channel.empty( )
+        ch_gwa_report = channel.empty( )
     }
 
     // Compile versions of tools used in the workflow
@@ -169,7 +183,8 @@ workflow NEMASCAN {
 
 
     emit:
-    broad_gwa: Channel<BroadRecord>  = ch_broad_gwa
+    gt_matrix: Channel<Path> = ch_genotype_matrix
+    broad_gwa: Channel<BroadRecord>  = ch_broad_gwa_nomat
     independent_tests: Value<Path> = ch_independent_tests
     h2: Value<Path> = ch_h2
     fine_gwa: Channel<FineMapRecord> = ch_finemap_gwa

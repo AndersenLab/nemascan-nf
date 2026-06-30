@@ -5,7 +5,7 @@ process GCTA64_GWAS {
     label 'process_small_progressive'
 
     conda "${moduleDir}/environment.yml"
-    container "docker://quay.io/biocontainers/gcta:1.94.1--h9ee0642_0"
+    container "quay.io/biocontainers/gcta:1.94.1--h9ee0642_0"
 
     input:
     record(

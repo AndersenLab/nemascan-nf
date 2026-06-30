@@ -5,9 +5,6 @@ process STRING_TO_FILE {
 
     label "local"
 
-    conda null
-    container null
-
     input:
     record (
         name: String,

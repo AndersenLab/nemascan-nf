@@ -12,7 +12,7 @@ process GWA_REPORT {
     label 'process_single_progressive'
 
     conda "${moduleDir}/environment.yml"
-    container "docker://andersenlab/plotly:20260417"
+    container "andersenlab/plotly:20260417"
 
     input:
     config: ConfigRecord

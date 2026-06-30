@@ -98,14 +98,23 @@ workflow PIPELINE_INITIALISATION {
     ch_traits = channel.fromPath ( params.traits, checkIfExists: true )
 
     ch_vcf = channel.fromPath ( params.vcf, checkIfExists: true )
-        .map { row -> record(vcf: row, vcf_index: file("${row.parent}/${row.name}.csi")) }
+        .combine (
+            channel.fromPath ( params.vcf_index, checkIfExists: true )
+        )
+        .map { row -> record(vcf: row[0], vcf_index: row[1]) }
 
     if (finemapping) {
         ch_imputed_vcf = channel.fromPath ( params.imputed, checkIfExists: true )
-            .map { row -> record(vcf: row, vcf_index: file("${row.parent}/${row.name}.csi")) }
+        .combine (
+            channel.fromPath ( params.imputed_index, checkIfExists: true )
+        )
+            .map { row -> record(vcf: row[0], vcf_index: row[1]) }
     } else {
         ch_imputed_vcf = channel.fromPath ( params.vcf, checkIfExists: true )
-            .map { row -> record(vcf: row, vcf_index: file("${row.parent}/${row.name}.csi")) }
+        .combine (
+            channel.fromPath ( params.vcf_index, checkIfExists: true )
+        )
+            .map { row -> record(vcf: row[0], vcf_index: row[1]) }
     }
 
     if (matrix_only == false && params.annotation != null) {

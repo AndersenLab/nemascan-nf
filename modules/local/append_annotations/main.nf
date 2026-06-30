@@ -5,7 +5,7 @@ process APPEND_ANNOTATIONS {
     label 'process_small_progressive'
 
     conda "${moduleDir}/environment.yml"
-    container "docker://andersenlab/numpy:2025071813435349b371"
+    container "andersenlab/numpy:2025071813435349b371"
 
     input:
     record(

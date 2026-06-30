@@ -5,7 +5,7 @@ process GENOTYPE_MATRIX_EIGEN {
     tag "${chromosome}"
 
     conda "${moduleDir}/environment.yml"
-    container "docker://andersenlab/numpy:2025071813435349b371"
+    container "andersenlab/numpy:2025071813435349b371"
 
     input:
     record(

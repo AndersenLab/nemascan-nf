@@ -4,7 +4,7 @@ process LD_PRUNED_MARKERS {
     label 'process_medium_progressive'
 
     conda "${moduleDir}/environment.yml"
-    container "docker://quay.io/biocontainers/plink:1.90b6.21--h779adbc_1"
+    container "quay.io/biocontainers/plink:1.90b6.21--h779adbc_1"
 
     input:
     record(
