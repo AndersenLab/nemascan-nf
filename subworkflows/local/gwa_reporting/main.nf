@@ -165,7 +165,7 @@ workflow GWA_REPORTING {
                         )
                         .mix (
                             channel.of ( record(
-                                entry: "params\talpha=${params.alpha}\tsignificance_threshold=${params.significance_threshold}\tuser=${workflow.userName}\tworkflow_branch=${workflow.revision}\tworkflow_commit=${workflow.commitId}",
+                                entry: "params\talpha=${params.alpha}\tsignificance_threshold=${params.significance_threshold}\tuser=${workflow.userName}",
                                 files: []) )
                         )
                         .mix (
@@ -174,7 +174,7 @@ workflow GWA_REPORTING {
                         )
                         .mix (
                             ch_git
-                                .map { row -> record(entry: "params\trepo=${row.repo}\tbranch=${row.branch}\tcommit=${row.commit}", files: []) }
+                                .map { row -> record(entry: "params\tworkflow_repo=${row.repo}\tworkflow_branch=${row.branch}\tworkflow_commit=${row.commit}", files: []) }
                         )
                 )
                 .map { row -> tuple(row[0], row[1]) }

@@ -1473,7 +1473,7 @@ $(document).ready(function() {
     const now = new Date();
     $(".meta").append("Generated " + now + "<br>");
     $(".meta").append("Run by " + all_data.params.user + "<br>");
-    $(".meta").append("https://www.github.com/andersenlab/nemascan-nf branch:" + all_data.params.workflow_branch + " commit:" + all_data.params.workflow_commit);
+    $(".meta").append(all_data.params.workflow_repo + " branch:" + all_data.params.workflow_branch + " commit:" + all_data.params.workflow_commit);
     var toc_entries=[];
     toc_entries.push(["Usage", "usage", 1]);
     var issue_section=$('#issues_box');
