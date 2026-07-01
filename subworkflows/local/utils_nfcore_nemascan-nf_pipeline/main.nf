@@ -30,6 +30,12 @@ record EqtlRecord {
     expression: Path
 }
 
+record GitRecord {
+    repo: String
+    branch: String
+    commit: String
+}
+
 workflow PIPELINE_INITIALISATION {
 
     take:
@@ -155,6 +161,18 @@ workflow PIPELINE_INITIALISATION {
         error("The gwa_method parameter must be 'both', 'loco', or 'inbred', not '${params.gwa_method}'.")
     }
 
+    if (params.git_info != null) {
+        ch_git = channel.fromPath ( params.git_info, checkIfExists: true )
+            .flatMap { csv -> csv.splitCsv(sep: "\t", header: true) }
+            .map { row -> record(row) }
+    } else {
+        ch_git = channel.of ( record(
+            repo: "${workflow.repository}",
+            branch: "${workflow.revision}",
+            commit: "${workflow.commitId}"
+            ) )
+    }
+
     emit:
     traits: Channel<Path>           = ch_traits
     vcf: Channel<VcfRecord>         = ch_vcf
@@ -164,6 +182,7 @@ workflow PIPELINE_INITIALISATION {
     isogroups: Channel<Path>        = ch_isogroups
     eqtl: Channel<EqtlRecord>       = ch_eqtl
     gwa_method: Channel<String>     = ch_gwa_method
+    git: Channel<GitRecord>         = ch_git
 }
 
 /*

@@ -225,10 +225,12 @@ def parse_config(fname, trait):
             elif key == 'highlight_strains':
                 data[key] = line[1].split(',')
             elif key == 'params':
-                data[key] = {x.split('=')[0]: x.split('=')[1] for x in line[1:]}
+                for pair in line[1:]:
+                    k, v = pair.split("=")
+                    data[key][k] = v
             elif key == 'genes':
                 config[key] = line[1]
-    data.setdefault('params', {})
+                
     data['params']['trait'] = trait
     data['methods'].sort()
 

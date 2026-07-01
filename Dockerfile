@@ -22,6 +22,9 @@ ENV NXF_VER=26.04.1 \
 #     cd /nemascan && \
 #     git checkout 2f19f5f80dcc397d73698fd5cd3cb571c53299b6
 
+# Create git info file
+RUN echo -e "repo\tbranch\tcommit\n$(git config --get remote.origin.url | sed s'/\.git//')\t$(git branch --show-current)\t$(git rev-parse HEAD)" > /nemascan/assets/git_info.tsv
+
 WORKDIR /nemascan
 
 COPY assets/ /nemascan/assets/
@@ -59,4 +62,3 @@ RUN mkdir /nemascan/bin && \
     fi \
   done && \
   if [ "$(ls -A /nemascan/bin)" ]; then chmod 777 /nemascan/bin/*; fi
-

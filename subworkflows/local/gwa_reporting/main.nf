@@ -38,6 +38,11 @@ record ConfigRecord {
     paths: List<Path>
     template: Path
 }
+record GitRecord {
+    repo: String
+    branch: String
+    commit: String
+}
 record ReportRecord {
     trait_name: String
     report: Path
@@ -53,6 +58,7 @@ workflow GWA_REPORTING {
     ch_roi_gt: Channel<RoiRecord>
     ch_med_results: Channel<MediationRecord>
     ch_haplotypes: Channel<Path>
+    ch_git: Channel<GitRecord>
 
     main:
     ch_trait_names = ch_broad_gwa
@@ -63,6 +69,19 @@ workflow GWA_REPORTING {
         ch_genes = channel.fromPath( params.genes, checkIfExists:true )
     } else {
         ch_genes = channel.empty()
+    }
+
+    if (params.git_head != null) {
+        ch_git_head = channel.fromPath( params.git_head, checkIfExists:true )
+    } else if (workflow.repository != null ) {
+        ch_git_params = channel.of( record(
+            repository: workflow.repository,
+            revision: workflow.revision,
+            commitId: workflow.commitId
+         ))
+        //  ch_git_head = GIT2FILE( ch_git_params ).out
+    } else {
+        ch_git_head = channel.empty()
     }
 
     // Assemble config file for gwa report
@@ -152,6 +171,10 @@ workflow GWA_REPORTING {
                         .mix (
                             ch_genes
                                 .map { row -> record(entry: "genes\t${row.getName()}", files: [row]) }
+                        )
+                        .mix (
+                            ch_git
+                                .map { row -> record(entry: "params\trepo=${row.repo}\tbranch=${row.branch}\tcommit=${row.commit}", files: []) }
                         )
                 )
                 .map { row -> tuple(row[0], row[1]) }

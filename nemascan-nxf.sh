@@ -75,6 +75,8 @@ nextflow run main.nf \
   --haplotypes "${AWS_BUCKET}/dataset_release/${SPECIES}/${VCF_VERSION}/haplotype/haplotype_df_isotype.bed" \
   --genes "${AWS_BUCKET}/dataset_release/${SPECIES}/${VCF_VERSION}/browser_tracks/${VCF_VERSION}_${SPECIES}_transcripts.bed.gz" \
   --isogroups "https://caendr.org/request-strains/isotype_list/download" \
+  --significance_threshold EIGEN \
+  --git_info /nemascan/assets/git_info.tsv \
   --work_dir "${WORK_DIR}" \
   -output-dir "${OUTPUT_DIR}"
   

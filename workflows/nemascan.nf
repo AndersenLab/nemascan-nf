@@ -58,6 +58,11 @@ record VersionRecord {
     tool: String
     version: String
 }
+record GitRecord {
+    repo: String
+    branch: String
+    commit: String
+}
 
 workflow NEMASCAN {
 
@@ -70,6 +75,7 @@ workflow NEMASCAN {
     ch_isogroups: Channel<Path>
     ch_eqtl: Channel<EqtlRecord>
     ch_gwa_method: Channel<String>
+    ch_git: Channel<GitRecord>
 
     main:
     genotype_matrix_call = GENOTYPE_MATRIX (
@@ -146,7 +152,8 @@ workflow NEMASCAN {
                 ch_finemap_gwa,
                 ch_roi_gt,
                 ch_med_results,
-                ch_haplotypes
+                ch_haplotypes,
+                ch_git
                 )
         } else {
             ch_gwa_report = channel.empty( )

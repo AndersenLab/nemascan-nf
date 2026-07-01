@@ -153,6 +153,7 @@ workflow {
         workflow.outputDir
     )
 
+
     //
     // WORKFLOW: Run main workflow
     //
@@ -164,7 +165,8 @@ workflow {
         pipeline_initialisation_call.haplotypes,
         pipeline_initialisation_call.isogroups,
         pipeline_initialisation_call.eqtl,
-        pipeline_initialisation_call.gwa_method
+        pipeline_initialisation_call.gwa_method,
+        pipeline_initialisation_call.git
     )
 
     //
@@ -230,7 +232,7 @@ output {
     }
     gwa_report: Channel<ReportRecord> {
         path { sample ->
-            sample.report >> "${workflow.outputDir}/${sample.trait_name}/report/"
+            sample.report >> "${workflow.outputDir}/Reports/NemaScan_Report_${sample.trait_name}.html"
         }
         mode params.publish_dir_mode
         overwrite true
