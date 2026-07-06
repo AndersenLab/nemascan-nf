@@ -77,12 +77,12 @@ def main():
         start = 0
         stop = 1
         chr_indices = numpy.r_[0, numpy.where(map_data['CHR'][1:] != map_data['CHR'][:-1])[0] + 1, map_data.shape[0]]
-        chroms = map_data['CHR'][chr_indices[:-1]]
+        chroms = list(map_data['CHR'][chr_indices[:-1]])
         group = 1
         while start < sigSnps.shape[0]:
             while stop < sigSnps.shape[0] and sigSnps['CHR'][start] == sigSnps['CHR'][stop] and sig_indices[stop] - sig_indices[start] < snp_grouping:
                 stop += 1
-            chrint = numpy.searchsorted(chroms, sigSnps['CHR'][start])
+            chrint = chroms.index(sigSnps['CHR'][start])
             s, e = chr_indices[chrint:chrint + 2]
             upstream_index = max(s, sig_indices[start] - CI_size)
             downstream_index = min(e - 1, sig_indices[stop - 1] + CI_size)
