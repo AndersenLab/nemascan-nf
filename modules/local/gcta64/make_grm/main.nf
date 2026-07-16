@@ -46,7 +46,7 @@ process GCTA64_MAKE_GRM {
            --out ${meta.plink_prefix}_gcta_grm_${meta.true_method} \\
            --thread-num ${task.cpus}
 
-    if [[ "${meta.method}" == "inbred" ]]; then
+    if [[ "${meta.method}" != "loco" ]]; then
         gcta64 --grm ${meta.plink_prefix}_gcta_grm_${meta.true_method} \\
                --make-bK-sparse ${sparse_cut} \\
                --out ${meta.plink_prefix}_sparse_grm_${meta.true_method} \\
@@ -59,7 +59,7 @@ process GCTA64_MAKE_GRM {
     touch ${meta.plink_prefix}_gcta_grm_${meta.true_method}.grm.bin
     touch ${meta.plink_prefix}_gcta_grm_${meta.true_method}.grm.id
     touch ${meta.plink_prefix}_gcta_grm_${meta.true_method}.N.grm.bin
-    if [[ ${meta.method} == "inbred" ]]; then
+    if [[ ${meta.method} != "loco" ]]; then
         touch ${meta.plink_prefix}_sparse_grm_${meta.true_method}.grm.sp
         touch ${meta.plink_prefix}_sparse_grm_${meta.true_method}.grm.id
     fi

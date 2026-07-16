@@ -27,22 +27,32 @@ def main():
         int2chr = {x:x for x in range(numpy.unique(map_data['CHR']).shape[0])}
     
     # Load marker mapping data, using "method" to determine format
-    if args.method == "inbred":
-        map_data = numpy.loadtxt(args.gwas_mapping, skiprows=1, dtype=numpy.dtype([
-            ('CHR', 'U5'), ('marker', 'U12'), ('POS', numpy.int32), ('A1', 'U1'), ('A2', 'U1'), ('N', numpy.int32),
-            ('AF1', numpy.float32), ('BETA', numpy.float32), ('SE', numpy.float32),
-            ('log10p', numpy.float32)]))
-    else:
-        map_data = numpy.loadtxt(args.gwas_mapping, skiprows=1, dtype=numpy.dtype([
-            ('CHR', 'U5'), ('marker', 'U12'), ('POS', numpy.int32), ('A1', 'U1'), ('A2', 'U1'),
-            ('AF1', numpy.float32), ('BETA', numpy.float32), ('SE', numpy.float32),
-            ('log10p', numpy.float32)]))
+    header = open(args.gwas_mapping).readline().rstrip().upper().split("\t")
+    dtypes = {
+        'CHR': 'U5',
+        'MARKER': 'U12',
+        'SNP': 'U12',
+        'POS': numpy.int32,
+        'BP': numpy.int32,
+        'A1': 'U1',
+        'A2': 'U1',
+        'N': numpy.int32,
+        'FREQ': numpy.float32,
+        'AF1': numpy.float32,
+        'BETA': numpy.float32,
+        'B': numpy.float32,
+        'SE': numpy.float32,
+        'P': numpy.float32
+    }
+    mapping = {"SNP": "MARKER", "BP": "POS", "B": "BETA", "FREQ": "AF1", "P": "log10p"}
+    ndtype = numpy.dtype([(mapping.get(col, col), dtypes[col]) for col in header if col in dtypes])
+    map_data = numpy.loadtxt(args.gwas_mapping, skiprows=1, dtype=ndtype)
     map_data['log10p'] = -numpy.log10(map_data['log10p'])
     map_data = map_data[numpy.where(map_data['log10p'] != 0)]
     map_data = map_data[numpy.lexsort((map_data['POS'], map_data['CHR']))]
     for i in range(map_data.shape[0]):
-        tmp = map_data['marker'][i].split(':')
-        map_data['marker'][i] = ":".join([int2chr[int(tmp[0])], tmp[1]])
+        tmp = map_data['MARKER'][i].split(':')
+        map_data['MARKER'][i] = ":".join([int2chr[int(tmp[0])], tmp[1]])
         map_data['CHR'][i] = int2chr[int(map_data['CHR'][i])]
 
     # Determine the QTL cutoff based on the type of significance test
@@ -87,7 +97,7 @@ def main():
             upstream_index = max(s, sig_indices[start] - CI_size)
             downstream_index = min(e - 1, sig_indices[stop - 1] + CI_size)
             best_pval = numpy.argmax(sigSnps['log10p'][start:stop]) + start
-            intervals.append((sigSnps['CHR'][start], sigSnps['marker'][best_pval], sigSnps['log10p'][best_pval],
+            intervals.append((sigSnps['CHR'][start], sigSnps['MARKER'][best_pval], sigSnps['log10p'][best_pval],
                               map_data['POS'][upstream_index], sigSnps['POS'][best_pval],
                               map_data['POS'][downstream_index], group))
             group += 1

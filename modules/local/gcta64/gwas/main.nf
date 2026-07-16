@@ -33,8 +33,8 @@ process GCTA64_GWAS {
     record(tool:"gcta64", version:eval("gcta64 | grep version | cut -f 3 -d' '")) >> 'versions'
 
     script:
-    def command = meta.method == "loco" ? "--mlma-loco" : meta.method == "finemap" ? "--mlma" : "--fastGWA-mlm-exact"
-    def grm_option = meta.method == "inbred" ? "--grm-sparse ${meta.sparse_prefix}" : "--grm ${meta.grm_prefix}"
+    def command = meta.method == "loco" ? "--mlma-loco" : "--fastGWA-mlm-exact"
+    def grm_option = meta.method == "loco" ? "--grm ${meta.grm_prefix}" : "--grm-sparse ${meta.sparse_prefix}"
     def pca_option = pca ? "--qcovar ${pca}" : "" 
     """
     # linear regression model
@@ -49,8 +49,6 @@ process GCTA64_GWAS {
     
     if [[ ${meta.method} == "loco" ]]; then
         mv ${meta.id}_lmm-exact.loco.mlma ${meta.id}_lmm-exact.gwa
-    elif [[ ${meta.method} == "finemap" ]]; then
-        mv ${meta.id}_lmm-exact.mlma ${meta.id}_lmm-exact.gwa
     else
         mv ${meta.id}_lmm-exact.fastGWA ${meta.id}_lmm-exact.gwa
     fi
