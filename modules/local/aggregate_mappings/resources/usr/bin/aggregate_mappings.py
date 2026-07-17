@@ -47,8 +47,9 @@ def main():
     mapping = {"SNP": "MARKER", "BP": "POS", "B": "BETA", "FREQ": "AF1", "P": "log10p"}
     ndtype = numpy.dtype([(mapping.get(col, col), dtypes[col]) for col in header if col in dtypes])
     map_data = numpy.loadtxt(args.gwas_mapping, skiprows=1, dtype=ndtype)
-    map_data['log10p'] = -numpy.log10(map_data['log10p'])
     map_data = map_data[numpy.where(map_data['log10p'] != 0)]
+    map_data = map_data[numpy.where(map_data['log10p'] != 1)]
+    map_data['log10p'] = -numpy.log10(map_data['log10p'])
     map_data = map_data[numpy.lexsort((map_data['POS'], map_data['CHR']))]
     for i in range(map_data.shape[0]):
         tmp = map_data['MARKER'][i].split(':')
