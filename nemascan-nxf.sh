@@ -62,12 +62,16 @@ if [[ -z "${WORK_DIR}" ]]; then
   exit 1
 fi
 
+gcloud storage cp ${TRAIT_FILE} data_raw.tsv
+dos2unix -O data_raw.tsv > traits.tsv
+gcloud storage cp traits.tsv ${OUTPUT_DIR}/data_unix.tsv
+
 nextflow run main.nf \
   -profile gcp \
   --google_project "${GOOGLE_PROJECT}" \
   --google_zone "${QUEUE_REGION}" \
   --google_service_account_email "${GOOGLE_SERVICE_ACCOUNT_EMAIL}" \
-  --traits "${TRAIT_FILE}" \
+  --traits traits.tsv \
   --species "${SPECIES}" \
   --vcf "${AWS_BUCKET}/dataset_release/${SPECIES}/${VCF_VERSION}/variation/WI.${VCF_VERSION}.small.hard-filter.isotype.vcf.gz" \
   --imputed "${AWS_BUCKET}/dataset_release/${SPECIES}/${VCF_VERSION}/variation/WI.${VCF_VERSION}.impute.isotype.vcf.gz" \
@@ -79,5 +83,9 @@ nextflow run main.nf \
   --git_info /nemascan/assets/git_info.tsv \
   --work_dir "${WORK_DIR}" \
   -output-dir "${OUTPUT_DIR}"
-  
-  gcloud storage cp .nextflow.log ${OUTPUT_DIR}/
+
+EXITCODE=$?
+
+gcloud storage cp .nextflow.log ${OUTPUT_DIR}/
+
+exit ${EXITCODE}

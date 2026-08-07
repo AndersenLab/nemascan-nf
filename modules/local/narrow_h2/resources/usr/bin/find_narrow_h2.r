@@ -24,6 +24,7 @@ gt = genotype_matrix[,5:ncol(genotype_matrix)]
 gt[gt == 0] = NA
 gt[gt == -1] = 0
 genotype_matrix[,5:ncol(genotype_matrix)] = gt
+genotype_matrix = genotype_matrix %>% na.omit()
 phenotype_data = phenotype_data %>% 
   na.omit()
 

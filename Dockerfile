@@ -9,7 +9,9 @@
 FROM google/cloud-sdk:slim
 
 # Install OpenJDK JRE for Nextflow
-RUN apt-get update && apt-get install -y --no-install-recommends openjdk-21-jre wget procps
+RUN apt-get update && apt-get install -y --no-install-recommends openjdk-21-jre wget procps dos2unix && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
 
 LABEL Name="NemaScan-NF"
 

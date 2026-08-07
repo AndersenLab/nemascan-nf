@@ -6,6 +6,8 @@ isogroups=$1
 traits=$2
 vcf_strains=$3
 
+touch strain_issues.txt
+
 if [[ $(wc -l ${isogroups} | awk '{print $1}') -eq 0 ]]; then
     awk '{
         if (FNR == NR) {
