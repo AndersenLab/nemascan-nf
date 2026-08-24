@@ -66,6 +66,7 @@ workflow FINE_MAPPING {
         .map { row -> row.qtl }
         .flatMap { csv -> csv.splitCsv ( sep:"\t", header:true ) }
         .map{ row -> new QtlRecord(row) }
+        .filter { row -> row.CHROM != "MtDNA" }
         .map { row -> record(
             meta: [
                 id: "${row.trait}_${row.method}_${row.CHROM}_${row.startPOS}_${row.endPOS}",

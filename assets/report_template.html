@@ -779,7 +779,9 @@ function add_method_section(method) {
         toc_entries.push(["Linkage disequilibrium", method + "_interQTL_LD", 2]);
     }
     for (var i=0; i<sig_qtl.length; i++) {
-        toc_entries = toc_entries.concat(add_qtl_interval_section(method_div, method, sig_qtl[i][1]));
+        if (sig_qtl[i][0] != "MtDNA") {
+            toc_entries = toc_entries.concat(add_qtl_interval_section(method_div, method, sig_qtl[i][1]));
+        }
     }
     return toc_entries
 }
