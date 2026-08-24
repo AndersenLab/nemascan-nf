@@ -236,6 +236,7 @@ def parse_config(fname, trait):
 
     # need to wait to load these data until all markers are identified
     all_markers = {}
+    all_markers_nomt = {}
     for method in data['methods']:
         for marker, marker_data in data['broad'][method]['QTL'].items():
             if marker not in all_markers:
@@ -243,17 +244,20 @@ def parse_config(fname, trait):
             else:
                 all_markers[marker][1] = min(all_markers[marker][1], marker_data[1])
                 all_markers[marker][2] = max(all_markers[marker][2], marker_data[2])
+    for marker, bounds in all_markers.items():
+        if bounds[0] != "MtDNA":
+            all_markers_nomt[marker] = bounds
     strains = data['broad']['strain']
     marker_genotypes = load_genotype_matrix(config['genotype_matrix'], all_markers, strains)
     data['broad']['qtl_genotype'] = {}
     for key, value in marker_genotypes.items():
         data['broad']['qtl_genotype'][key] = value # {ref, alt, [genotypes]}
     if 'fine' in data and 'haplotypes' in config:
-        marker_haplotypes = load_haplotypes(config['haplotypes'], all_markers, strains)
+        marker_haplotypes = load_haplotypes(config['haplotypes'], all_markers_nomt, strains)
         for key, value in marker_haplotypes.items():
             data['fine'][key]['haplotype'] = value # [[(start, end, name, color), ...], [(start, end, name, color), ...], ...]
     if 'fine' in data and 'genes' in config and len(all_markers) > 0:
-        data['genes'] = load_genes(config['genes'], all_markers)
+        data['genes'] = load_genes(config['genes'], all_markers_nomt)
     
     # Calculate position offsets for plotting all chroms
     chroms = [(chrom.replace('MtDNA', 'ZMtDNA'), str(chrom)) for chrom in data['broad']['marker'].keys()]
@@ -432,7 +436,7 @@ def load_genotype_matrix(filename, markers, strains):
             marker = f"{chrom}:{pos}"
             if marker not in markers:
                 continue
-            genotype_matrix[marker] = {'ref':ref, 'alt': alt, 'genotype': tuple([int(line[x]) for x in cols])}
+            genotype_matrix[marker] = {'ref':ref, 'alt': alt, 'genotype': tuple([int(line[x]) if line[x] != 'NA' else line[x] for x in cols])}
     return genotype_matrix
 
 
@@ -488,8 +492,10 @@ def find_QTL_LD(data, method):
         for j, marker2 in enumerate(markers):
             if j <= i:
                 continue
-            LD[i][j] = float(np.corrcoef(np.array(data['broad']['qtl_genotype'][marker1]['genotype']),
-                                         np.array(data['broad']['qtl_genotype'][marker2]['genotype']))[0, 1]) ** 2
+            G1 = np.array([x if x != 'NA' else np.nan for x in data['broad']['qtl_genotype'][marker1]['genotype']], np.float64)
+            G2 = np.array([x if x != 'NA' else np.nan for x in data['broad']['qtl_genotype'][marker2]['genotype']], np.float64)
+            valid = np.where(np.logical_and(np.logical_not(np.isnan(G1)), np.logical_not(np.isnan(G2))))
+            LD[i][j] = float(np.corrcoef(G1[valid], G2[valid])[0, 1]) ** 2
             LD[j][i] = LD[i][j]
     return {'marker': markers, 'LD': LD}
 
