@@ -110,6 +110,7 @@ workflow {
     log.info ""
     log.info "Trait File                              = ${params.traits}"
     log.info "VCF                                     = ${params.vcf}"
+    log.info "VCF Index                               = ${params.vcf_index}"
     log.info "Species                                 = ${params.species}"
     log.info "Isogroups                               = ${params.isogroups}"
     log.info "Mapping run                             = ${params.mapping}"
@@ -131,6 +132,7 @@ workflow {
     }
     if (params.finemapping){
         log.info "Imputed                                 = ${params.imputed}"
+        log.info "Imputed Index                           = ${params.imputed_index}"
     }
     if (params.mediation){
         log.info "Transcript eQTL                         = ${params.transcript_eqtl}"
