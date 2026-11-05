@@ -507,9 +507,12 @@ def load_genes(fname, markers):
             line = line.decode('utf8').rstrip().split("\t")
             chrom = line[0]
             gene = line[3].split(':')[-1].split('.')
-            while not gene[1].isnumeric():
-                gene[1] = gene[1][:-1]
-            gene = f"{gene[0]}.{gene[1]}"
+            if len(gene) > 1:
+                while not gene[1].isnumeric():
+                    gene[1] = gene[1][:-1]
+                gene = f"{gene[0]}.{gene[1]}"
+            else:
+                gene = gene[0]
             esizes = [int(x) for x in line[10].rstrip(',').split(',')]
             estarts = [int(x) + int(line[1]) for x in line[11].rstrip(',').split(',')]
             data.setdefault(chrom, {})
