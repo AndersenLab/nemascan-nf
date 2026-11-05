@@ -969,12 +969,15 @@ function add_qtl_interval_section(div, method, marker) {
         div.append("<br><p>This second plot is very similar to the first. Here, each variant is represented by a diamond colored by the linkage to the peak marker (colored in red). This plot can be useful to determine what the strucutre of your region looks like. If you have many variants with high linkage to your peak marker, it is important to remember that any of those variants could be causal.</p>");
         add_LD_plot(div, method, marker);
         div.append("</div><br><div id='" + method + "_variant_table'><h3 id='" + method + "_" + marker + "_variants_title'>Intragenic variants in interval</h3>");
-        var data=[], header=['marker', 'ref', 'alt', 'WBGeneID', 'gene name', 'consequence', 'variant -log<sub>10</sub>(<i>p</i>)'];
+        var data=[], header=['marker', 'ref', 'alt', 'WBGeneID', 'gene name', 'consequence', 'variant', '-log<sub>10</sub>(<i>p</i>)'];
         var start=all_data.broad[method]['QTL'][marker][1], end=all_data.broad[method]['QTL'][marker][2], chrom=all_data.broad[method]['QTL'][marker][0];
         all_data.fine[marker]['variants'].forEach((variant, idx) => {
-            var x=all_data.fine[marker]['marker'][idx];
-            if (x >= start && x <= end && variant[2] != 'N/A' && variant[2] != "Intergenic") {
-                data.push([chrom + ":" + x, variant[4], variant[5], variant[0], variant[1], variant[2], variant[3]]);
+            var x=all_data.fine[marker]['marker'][idx], idx1=0;
+            if (x >= start && x <= end) {
+                if (variant[2] != 'N/A' && variant[2] != "Intergenic") {
+                    data.push([chrom + ":" + x, variant[4], variant[5], variant[0], variant[1], variant[2], variant[3], all_data.fine[method][marker]['logpval'][idx1]]);
+                }
+                idx1 += 1;
             }
         });
         create_table("", div, method + "_" + chrom + "_" + start + "_variant_table", header, data);

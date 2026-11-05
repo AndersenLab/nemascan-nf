@@ -1,25 +1,5 @@
 <html lang="en">
     <!DOCTYPE html>
-    <style>
-        table.dataTable tbody th,
-        table.dataTable tbody td {
-            white-space: nowrap;
-        }
-        main {
-            /* display: flex; */
-            gap: 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-        .is-position-fixed {
-            left:1200px;
-        }
-        .full-container {
-            width: 1200px;
-            left: 0;
-            margin-left: 0px;
-        }
-    </style>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -51,12 +31,44 @@
             line-height: 1.6;
             color: var(--text-color);
             background-color: var(--background-color);
+            display: flex;
+            justify-content: center;
         }
         
+        main {
+            /* display: flex; */
+            gap: 2rem;
+            margin: 0 auto;
+        }
+
+        .floating-toc {
+            width: 250px;
+            justify-self: left;
+            display: flex;
+            position: sticky;
+            top: 0;
+            left: 0;
+            align-self: flex-start;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid var(--secondary-color);
+            box-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
+        }
+
+        .full-container {
+            max-width: 1450px;
+            display: flex;
+            position: relative;
+            flex-wrap: nowrap;
+            justify-content: center;
+            flex-direction: row;
+        }
+
         .container {
-            max-width: 1200px;
+            width: 1200px;
             margin: 0 auto;
             padding: 20px;
+            justify-self: right;
         }
         
         /* Header Styles */
@@ -84,45 +96,7 @@
             max-height: 80px;
             margin-bottom: 20px;
         }
-        
-        /* Table of Contents */
-        .toc {
-            background: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            margin-bottom: 0px;
-        }
-        
-        .toc h2 {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--secondary-color);
-            padding-bottom: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .toc ul {
-            list-style: none;
-        }
-        
-        .toc li {
-            padding: 5px 0;
-        }
-        
-        .toc a {
-            color: var(--text-color);
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-        
-        .toc a:hover {
-            color: var(--secondary-color);
-        }
-        
-        .toc .toc-level-1 { margin-left: 0; font-weight: bold; }
-        .toc .toc-level-2 { margin-left: 20px; }
-        .toc .toc-level-3 { margin-left: 40px; font-size: 0.9em; }
-        
+
         /* Section Styles */
         .section {
             background: white;
@@ -172,6 +146,11 @@
             font-size: 0.9em;
         }
         
+        table.dataTable tbody th,
+        table.dataTable tbody td {
+            white-space: nowrap;
+        }
+
         .data-table thead {
             background: var(--primary-color);
             color: white;
@@ -305,7 +284,7 @@
             border-radius: 4px; /* Slightly rounded corners */
             font-family: sans-serif; /* Readable font */
         }
-        
+     
     </style>
     <script src="https://code.jquery.com/jquery-4.0.0.slim.min.js"></script>
     <link href="https://cdn.datatables.net/2.3.7/css/dataTables.dataTables.min.css" rel="stylesheet" crossorigin="anonymous"> 
@@ -313,11 +292,11 @@
     <script src="https://cdn.plot.ly/plotly-3.4.0.min.js" charset="utf-8"></script>
     </head>
 <body>
-    <div class="center full-container">
-        <nav class="toc toc-right js-toc relative z-1 transition--300 absolute pa4 pt5 is-position-fixed"></nav>
+    <div class="full-container" id="full_body">
+        <nav class="toc toc-left js-toc relative z-1 transition--300 absolute pa4 pt5 floating-toc"></nav>
         <div class="container pa4 pt5">
         <header class="report-header">
-            <h1>NemaScan Report for ben1</h1>
+            <h1 id="report_title"></h1>
             <p class="meta">
             </p>
         </header>
@@ -382,9 +361,10 @@
                 <h1 id="citations_title">Please kindly cite the following publications</h1>
                 <ul>
                     <li>Widmayer SJ, Evans KS, Zdraljevic S, and Andersen EC (2022) Evaluating the power and limitations of genome-wide association mapping in C. elegans. G3, May 10; DOI: <a href="https://dx.doi.org/10.1093/g3journal/jkac114">10.1093/g3journal/jkac114</a>.</li>
-                    <li>Lee D, Zdraljevic S, Stevens L, Wang Y, Tanny RE, Crombie TA, Cook DE, Webster AK, Chirakar R, Baugh LR, Sterken M, Braendle C, Felix M-A, Rockman MV, and Andersen EC (2021) Balancing selection maintains ancient genetic diversity in C. elegans. Nature Ecology and Evolution, Apr 5; DOI: <a href="https://dx.doi.org/10.1038/s41559-021-01435-x">10.1038/s41559-021-01435-x</a>.</li>
                     <li>Zdraljevic S, Fox BW, Strand C, Panda O, Tenjo-Castano FJ, Brady SC, Crombie TA, Doench JG, Schroeder FC, and Andersen EC (2019) Natural variation in arsenic toxicity is explained by differences in branched chain amino acid metabolism eLife, Apr 8; DOI: <a href="https://dx.doi.org/10.7554/eLife.40260">10.7554/eLife.40260</a>.</li>
                     <li>Cook DE, Zdraljevic S, Roberts JP, Andersen EC (2016) CeNDR, the Caenorhabditis elegans Natural Diversity Resource. Nucleic Acids Research, Oct 3; <a href="https://dx.doi.org/10.1093/nar/gkw893">10.1093/nar/gkw893</a>.</li>
+                    <li>Crombie TA, McKeown R, Moya ND, Evans KS, Widmayer SJ, LaGrassa V, Roman N, Tursunova O, Zhang G, Gibson SB, Buchanan CM, Roberto NM, Viera R, Tanny RE, Andersen EC (2023) CaeNDR, the Caenorhabditis Natural Diversity Resource. Nucleic Acids Research, Oct 19; <a href="http://dx.doi.org/10.1093/nar/gkad887">10.1093/nar/gkad887</a>.</li>
+                    <li>Andersen EC, Rockman MV (2002) Natural genetic variation as a tool for discovery in Caenorhabditis nematodes. Genetics, Jan 4; <a href="http://dx.doi.org/10.1093/genetics/iyab156">10.1093/genetics/iyab156</a>.</li>
                 </ul>
             </div>
         </main>
@@ -694,7 +674,7 @@ function create_broad_manhattan_plot(method, div, dom_id) {
         annotations: annotations,
         xaxis: {
             title: {
-                text:'Genomic Position (Mb)'
+                text:'Genomic position (Mb)'
             },
             tickmode: 'array',
             ticks: 'outside',
@@ -778,7 +758,7 @@ function add_method_section(method) {
 
     method_div.append("<div id='" + method + "_pxg_plots'><h2 id='" + method + "_pxg_title'>Phenotype by Genotype Split</h2><p>For each detected QTL, we can observe the phenotypes of the strains with the reference (REF) allele (<i>i.e.</i>, same genotype as the reference strain) compared to the phenotypes of the strains with the alternative (ALT) allele (i.e., genotype different than the reference strain). A QTL is defined as a region where genetic variation is correlated with phenotypic variation, so we expect to see a difference in phenotype between the REF and ALT groups. In a best-case scenario, we like to see a large phenotypic difference between the REF and ALT groups and many strains in both groups. If one group has a small number of strains (just over 5% of the strains in the mapping), this QTL could be caused by a spurious association of a variant with a phenotypic difference. It is also important to ensure that the mean phenotype of neither group is driven by a small number of outlier strains.</p>")
     toc_entries.push(["Phenotype by genotype split", method + "_pxg_plots", 2]);
-    var pxg_div_name, container_div;
+    var pxg_div_name, container_div, highlighted=0;
     sig_qtl.forEach((row, idx) => {
         if (idx % 3 == 0) {
             method_div.append("<div class='container'><div class='row' id='pxg_" + method + "_" + idx + "_row'></div></div>");
@@ -788,22 +768,27 @@ function add_method_section(method) {
             container_div.append("<div class='col-md-4' style='width:33%;' id='" + "pxg_" + method + "_" + (idx + 2) + "'></div>");
         }
         pxg_div_name = "pxg_" + method + "_" + idx;
-        create_PxG_plot(pxg_div_name, row[1], method);
+        highlighted += create_PxG_plot(pxg_div_name, row[1], method);
     });
+    if (highlighted > 0) {
+        method_div.append("<p>Colored points represent user-selected strains for highlighting.</p>");
+    }
     method_div.append("</div><br>");
     if (sig_qtl.length > 1) {
         add_interQTL_linkage_plot(method_div, method);
         toc_entries.push(["Linkage disequilibrium", method + "_interQTL_LD", 2]);
     }
     for (var i=0; i<sig_qtl.length; i++) {
-        toc_entries = toc_entries.concat(add_qtl_interval_section(method_div, method, sig_qtl[i][1]));
+        if (sig_qtl[i][0] != "MtDNA") {
+            toc_entries = toc_entries.concat(add_qtl_interval_section(method_div, method, sig_qtl[i][1]));
+        }
     }
     return toc_entries
 }
 
 function create_PxG_plot(div_name, marker, method) {
     var traces=[], Y0=[], labels0=[], Y1=[], labels1=[], colors0=[], colors1=[];
-    var div = $("#" + div_name);
+    var div = $("#" + div_name), highlighted=0;
     div.append("<div id='" + div_name + "_plot'></div");
     all_data.broad.strain.forEach((strain, idx) => {
         if (all_data.broad.qtl_genotype[marker]['genotype'][idx] == -1){
@@ -811,6 +796,7 @@ function create_PxG_plot(div_name, marker, method) {
                 colors0.push('#D41159');
                 Y0.push(all_data.broad.phenotype[idx]);
                 labels0.push(strain);
+                highlighted += 1;
             } else {
                 colors0.push('#000000');
                 Y0.push(all_data.broad.phenotype[idx]);
@@ -821,6 +807,7 @@ function create_PxG_plot(div_name, marker, method) {
                 colors1.push('#D41159');
                 Y1.push(all_data.broad.phenotype[idx]);
                 labels1.push(strain);
+                highlighted += 1;
             } else {
                 colors1.push('#000000');
                 Y1.push(all_data.broad.phenotype[idx]);
@@ -906,11 +893,12 @@ function create_PxG_plot(div_name, marker, method) {
         height: 400,
     };
     var plot = Plotly.newPlot(div_name + "_plot", traces, layout);
+    return highlighted;
 }
 
 function add_interQTL_linkage_plot(div, method) {
     var width=Math.min(200*(all_data.broad[method]['LD_matrix']['marker'].length), 625);
-    div.append("<div id='" + method + "_interQTL_LD'><h2 id='" + method + "_ld_title'>Linkage Disequilibrium</h2><p>If your trait has multiple QTL, we calculate linkage disequilibrium (LD) between them. This is useful because sometimes we find that one strong QTL might be in linkage disequilibrium to a secondary QTL (even if it exists on another chromosome). If this is the case, the secondary QTL might not contain a true causal variant, thus it is important to check this before narrowing the QTL experimentally.</p><br><div id='" + method + "_interQTL_LD_plot' style='height: " + (width + 70) + "; width: " + (width + 175) + ";'></div></div>")
+    div.append("<div id='" + method + "_interQTL_LD'><h2 id='" + method + "_ld_title'>Linkage Disequilibrium</h2><p>If your trait has multiple QTL, we calculate linkage disequilibrium (LD) between them. This comaprison is useful because sometimes we find that one strong QTL might be in linkage disequilibrium to a secondary QTL (even if it exists on another chromosome). If this is the case, the secondary QTL might not contain a true causal variant, thus it is important to check this before narrowing the QTL experimentally.</p><br><div id='" + method + "_interQTL_LD_plot' style='height: " + (width + 70) + "; width: " + (width + 175) + ";'></div></div>")
     var div_name=method + "_interQTL_LD_plot", ld_data=[], labels=[];
     all_data.broad[method]['LD_matrix']['marker'].forEach((marker) => {
         ld_data.push(new Array(all_data.broad[method]['LD_matrix']['marker'].length).fill(1));
@@ -975,22 +963,30 @@ function add_qtl_interval_section(div, method, marker) {
     div.append("<div id='" + marker + "_finemapping'><h3 id='" + method + "_" + marker + "_finemapping_title'>Fine Mapping</h3>");
     toc_entries.push(["Fine mapping", marker + "_finemapping", 3]);
     div.append("<p>Fine mapping was performed by evaluating the genotype-phenotype relationships for all variants nearby the QTL identified from the GWAS mapping using a vcf containing imputed variants. The original mapping only used a subset of marker variants. Only SNVs were considered in this mapping. Other variant types could underlie differences in your trait.</p>");
-    div.append("<p>Each variant is represented by a vertical line, colored by the predicted variant impact as shown in the EFFECT plot key. Genes are represented by horizontal lines with an arrow showing the direction of the gene. The peak marker from the GWAS mapping is shown as a vertical dotted blue line.</p>");
-    add_variant_plot(div, method, marker);
-    div.append("<br><p>This second plot is very similar to the first. Here, each variant is represented by a diamond colored by the linkage to the peak marker (colored in red). This plot can be useful to determine what the strucutre of your region looks like. If you have many variants with high linkage to your peak marker, it is important to remember that any of those variants could be causal.</p>");
-    add_LD_plot(div, method, marker);
-    div.append("</div><br><div id='" + method + "_variant_table'><h3 id='" + method + "_" + marker + "_variants_title'>Intragenic variants in interval</h3>");
-    var data=[], header=['marker', 'ref', 'alt', 'WBGeneID', 'gene name', 'consequence', 'variant -log<sub>10</sub>(<i>p</i>)'];
-    var start=all_data.broad[method]['QTL'][marker][1], end=all_data.broad[method]['QTL'][marker][2], chrom=all_data.broad[method]['QTL'][marker][0];
-    all_data.fine[marker]['variants'].forEach((variant, idx) => {
-        var x=all_data.fine[marker]['marker'][idx];
-        if (x >= start && x <= end && variant[2] != 'N/A' && variant[2] != "Intergenic") {
-            data.push([chrom + ":" + x, variant[4], variant[5], variant[0], variant[1], variant[2], variant[3]]);
-        }
-    });
-    create_table("", div, method + "_" + chrom + "_" + start + "_variant_table", header, data);
-    div.append("</div><br>");
-    toc_entries.push(["Intragenic variants in interval", method + "_" + chrom + "_" + start + "_variant_table_div", 3]);
+    if (Object.hasOwn(all_data.fine[marker], 'variants')) {
+        div.append("<p>Each variant is represented by a vertical line, colored by the predicted variant impact as shown in the EFFECT plot key. Genes are represented by horizontal lines with an arrow showing the direction of the gene. The peak marker from the GWAS mapping is shown as a vertical dotted blue line.</p>");
+        add_variant_plot(div, method, marker);
+        div.append("<br><p>This second plot is very similar to the first. Here, each variant is represented by a diamond colored by the linkage to the peak marker (colored in red). This plot can be useful to determine what the strucutre of your region looks like. If you have many variants with high linkage to your peak marker, it is important to remember that any of those variants could be causal.</p>");
+        add_LD_plot(div, method, marker);
+        div.append("</div><br><div id='" + method + "_variant_table'><h3 id='" + method + "_" + marker + "_variants_title'>Intragenic variants in interval</h3>");
+        var data=[], header=['marker', 'ref', 'alt', 'WBGeneID', 'gene name', 'consequence', 'variant', '-log<sub>10</sub>(<i>p</i>)'];
+        var start=all_data.broad[method]['QTL'][marker][1], end=all_data.broad[method]['QTL'][marker][2], chrom=all_data.broad[method]['QTL'][marker][0];
+        all_data.fine[marker]['variants'].forEach((variant, idx) => {
+            var x=all_data.fine[marker]['marker'][idx], idx1=0;
+            if (x >= start && x <= end) {
+                if (variant[2] != 'N/A' && variant[2] != "Intergenic") {
+                    data.push([chrom + ":" + x, variant[4], variant[5], variant[0], variant[1], variant[2], variant[3], all_data.fine[method][marker]['logpval'][idx1]]);
+                }
+                idx1 += 1;
+            }
+        });
+        create_table("", div, method + "_" + chrom + "_" + start + "_variant_table", header, data);
+        div.append("</div><br>");
+        toc_entries.push(["Intragenic variants in interval", method + "_" + chrom + "_" + start + "_variant_table_div", 3]);
+    } else if (Object.hasOwn(all_data.fine[marker], 'LD')) {
+        div.append("<p>In this plot, each variant is represented by a diamond colored by the linkage to the peak marker (colored in red). This plot can be useful to determine what the strucutre of your region looks like. If you have many variants with high linkage to your peak marker, it is important to remember that any of those variants could be causal.</p>");
+        add_LD_plot(div, method, marker);
+    }
 
     if (Object.hasOwn(all_data, 'mediation')) {
         add_mediation(div, method, marker);
@@ -1027,27 +1023,49 @@ function add_variant_plot(div, method, marker) {
             idx1 += 1;
         }
     });
-    var traces=[];
-    var minGeneY=all_data.genes[marker]['bounds'][0], maxGeneY=all_data.genes[marker]['bounds'][1];
-    minGeneY -= (maxGeneY - minGeneY) * 0.05;
-    maxGeneY += (maxGeneY - minGeneY) * 0.05;
-    all_data.genes[marker]['genes'].forEach(([strand, name, path_X, path_Y]) => {
-        traces.push({
-            x: path_X,
-            y: path_Y,
-            mode: 'lines',
-            fill: 'toself',
-            line: {
-                width: 0,
-            },
-            fillcolor: strand_colors[strand],
-            text: strand + " " + name,
-            hoverinfo: 'text',
-            hoveron: 'fills',
-            yaxis: 'y',
-            showlegend: false
+    var traces=[], nrows, subplots, height;
+    if (Object.hasOwn(all_data, 'genes')) {
+        var minGeneY=all_data.genes[marker]['bounds'][0], maxGeneY=all_data.genes[marker]['bounds'][1];
+        minGeneY -= (maxGeneY - minGeneY) * 0.05;
+        maxGeneY += (maxGeneY - minGeneY) * 0.05;
+        all_data.genes[marker]['genes'].forEach(([strand, name, path_X, path_Y]) => {
+            traces.push({
+                x: path_X,
+                y: path_Y,
+                mode: 'lines',
+                fill: 'toself',
+                line: {
+                    width: 0,
+                },
+                fillcolor: strand_colors[strand],
+                text: strand + " " + name,
+                hoverinfo: 'text',
+                hoveron: 'fills',
+                yaxis: 'y',
+                showlegend: false
+            });
         });
-    });
+        traces.push({
+            x: [peak/1e6, peak/1e6],
+            y: [minGeneY, maxGeneY],
+            mode: 'lines',
+            showlegend: false,
+            hoverinfo: 'none',
+            line: {
+                color:"#7777FF",
+                width: 2,
+                dash: 'dash'
+            },
+            yaxis: 'y'
+        });
+        nrows=2;
+        subplots=[['xy'], ['xy2']];
+        height=500;
+    } else {
+        nrows=1;
+        subplots=[['xy2']];
+        height=400;
+    }
 
     Object.keys(X).forEach((group) => {
         if (X[group].length > 0) {
@@ -1084,19 +1102,6 @@ function add_variant_plot(div, method, marker) {
         yaxis: 'y2'
     });
     traces.push({
-        x: [peak/1e6, peak/1e6],
-        y: [minGeneY, maxGeneY],
-        mode: 'lines',
-        showlegend: false,
-        hoverinfo: 'none',
-        line: {
-            color:"#7777FF",
-            width: 2,
-            dash: 'dash'
-        },
-        yaxis: 'y'
-    });
-    traces.push({
         x: [start/1e6, end/1e6],
         y: [maxY * 1.025, maxY * 1.025],
         mode: 'lines',
@@ -1111,14 +1116,14 @@ function add_variant_plot(div, method, marker) {
 
     var layout = {
         grid: {
-            rows: 2,
+            rows: nrows,
             columns: 1,
-            subplots: [['xy'], ['xy2']],
+            subplots: subplots,
             roworder: 'bottom to top'
         },
         xaxis: {
             title: {
-                text:'Genomic Position (Mb)'
+                text:'Genomic position (Mb)'
             },
             showline: true,
             linewidth: 2,
@@ -1163,7 +1168,7 @@ function add_variant_plot(div, method, marker) {
             t: 40,
             b: 37
         },
-        height: 500,
+        height: height,
         showlegend: true,
         legend: {
             x: 1.01,
@@ -1182,8 +1187,7 @@ function add_variant_plot(div, method, marker) {
 function add_LD_plot(div, method, marker) {
     var X=[], Y=[], Z=[], labels=[], chrom=all_data.broad[method]['QTL'][marker][0], maxY=0, idx1=0;
     var start=all_data.broad[method]['QTL'][marker][1], peak=all_data.broad[method]['QTL'][marker][3], end=all_data.broad[method]['QTL'][marker][2];
-    all_data.fine[marker]['variants'].forEach((variant, idx) => {
-        var x=all_data.fine[marker]['marker'][idx];
+    all_data.fine[marker]['marker'].forEach((x, idx) => {
         if (x >= start && x <= end) {
             var logpval=all_data.fine[method][marker]['logpval'][idx1], ld=all_data.fine[marker]['LD'][idx];
             X.push(x/1e6);
@@ -1240,7 +1244,7 @@ function add_LD_plot(div, method, marker) {
     var layout = {
         xaxis: {
             title: {
-                text:'Genomic Position (Mb)'
+                text:'Genomic position (Mb)'
             },
             showline: true,
             linewidth: 2,
@@ -1401,7 +1405,7 @@ function add_haplotypes(div, method, marker) {
     var layout = {
         xaxis: {
             title: {
-                text:'Genomic Position (Mb)'
+                text:'Genomic position (Mb)'
             },
             showline: false,
             tickmode: 'array',
@@ -1447,7 +1451,7 @@ function add_haplotypes(div, method, marker) {
             textangle: 90
         }],
         margin: {
-            l: 50,
+            l: 55,
             r: 30,
             t: 40,
             b: 37
@@ -1470,9 +1474,11 @@ function add_toc_entry(target_id, level, tocList) {
 }
 
 $(document).ready(function() {
-    $("head title").append("NemaScan Report for " + all_data.params.trait);
+    $("#report_title").append("NemaScan Report for " + all_data.params.trait);
     const now = new Date();
-    $(".meta").append("Generated " + now);
+    $(".meta").append("Generated " + now + "<br>");
+    $(".meta").append("Run by " + all_data.params.user + "<br>");
+    $(".meta").append(all_data.params.workflow_repo + " branch:" + all_data.params.workflow_branch + " commit:" + all_data.params.workflow_commit);
     var toc_entries=[];
     toc_entries.push(["Usage", "usage", 1]);
     var issue_section=$('#issues_box');
@@ -1512,7 +1518,6 @@ $(document).ready(function() {
         toc_entries = toc_entries.concat(add_method_section(method));
     });
     toc_entries.push(['Citations', "citations", 1]);
-    console.log(toc_entries);
 
     tocbot.init({
         tocSelector: '.js-toc',
@@ -1522,6 +1527,7 @@ $(document).ready(function() {
         collapseDepth: 0,
         scrollSmooth: false
     });
+    document.getElementById("full_body").style.height = document.getElementById("report_body").clientHeight;
 
 });
 </script>
